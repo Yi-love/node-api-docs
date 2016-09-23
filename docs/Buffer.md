@@ -1,13 +1,13 @@
 # 内容目录
 
-*   [Buffer](#Buffer)
-    *   [Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()](#buffer_from_alloc_allocUnsafe)
-        *   [`--zero-fill-buffers` 命令行参数](#zero_fill_buffers)
-        *   [是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？](#Buffer_allocUnsafe_allocUnsafeSlow)
-    *   [Buffers and Character Encodings （缓存和字符编码）](#Buffers_and_Character_Encodings)
+*   [Buffer](#buffer)
+    *   [Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()](#bufferfrom-bufferalloc-和-bufferallocunsafe)
+        *   [`--zero-fill-buffers` 命令行参数](#--zero-fill-buffers-命令行参数)
+        *   [是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？](#是什么让-bufferallocunsafe-和-bufferallocunsafeslow-不安全)
+    *   [Buffers and Character Encodings （缓存和字符编码）](#buffers-and-character-encodings-缓存和字符编码)
 
 
-# Buffer [#](#Buffer)
+# Buffer
 在 ECMAScript 2015 (ES6) [TypedArray][TypedArray] 之前，JavaScript语言是没有机制去读取和处理二进制文件流的。
 Node.js API 引进`Buffer`类是为了让它能处理上下文像TCP流和文件系统操作流一样的8位字节的流。
 
@@ -50,7 +50,7 @@ ES6已经添加了 [TypedArray][TypedArray] ，`Buffer` 实现了 [Uint8Array] A
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 
 
-## Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()  [#](#buffer_from_alloc_allocUnsafe)
+## Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()
 Node.js V6 版本，可以使用 `Buffer`的构造函数创建，`Buffer`会根据参数的不同选择选择其中的一种分配形式返回。
 
 *   给 `Buffer()` 第一个参数传人数字 （eq: `new Buffer(10)`）,那将分配一个新的指定大小的`buffer`缓冲区对象。这样分配的`Buffer`不会初始化，可能会存在敏感数据。这种 `Buffer` 必须使用 `buffer.fill(0)` 或完全重写 `Buffer` 的方式来完成对缓冲区的初始化。使用这种方式初始化缓冲区是为了提高性能，他们的区别在于需要创建一个快但没初始化的缓冲区还是创建一个慢但是安全的缓冲区。
@@ -69,7 +69,7 @@ Node.js V6 版本，可以使用 `Buffer`的构造函数创建，`Buffer`会根�
 *   `Buffer.alloc(size [,fill[,encoding]])` 返回一个已经初始化大小的`Buffer`实例。这个方法值得注意的是它比 `Buffer.allocUnsafe(size)`慢 ，但是它确保`Buffer`实例初始化内容不会包含敏感数据。
 *   `Buffer.allocUnsafe(size)` 和 `Buffer.allocUnsafeSlow(size)` 都会返回一个新的指定大小的缓冲区，内容必须使用 `Buffer.fill(0)`或者完全重写中的其中一种进行初始化。`Buffer.allocUnsafe()`会在共享内存池中分配内存，当大小小于等于`Buffer.poolSize`一半的时候返回`Buffer`实例。`Buffer.allocUnsafeSlow()`返回`Buffer`实例不是使用共享内存池分配内存。
 
-### `--zero-fill-buffers` 命令行参数 [#](#zero_fill_buffers)
+### `--zero-fill-buffers` 命令行参数
 >   Added in: v5.10.0
 
 Node.js 可以使用 `--zero-fill-buffers` 命令行参数强迫 `new Buffer(size)`,`Buffer.allocUnsafe()`,`Buffer.allocUnsafeSlow()` 或 `new SlowBuffer(size)`自动在 `zero-filled`上创建新的缓冲区。使用这种方法修改默认行为，可能会对性能产生重大的影响。建议只有在新分配的缓冲区不能包含敏感数据的时候才使用 `--zero-fill-buffers`。
@@ -82,14 +82,14 @@ Node.js 可以使用 `--zero-fill-buffers` 命令行参数强迫 `new Buffer(siz
   <Buffer 00 00 00 00 00>
 ```
 
-### 是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？  [#](#Buffer_allocUnsafe_allocUnsafeSlow)
+### 是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？
 使用 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` 分配内存的时候是不会初始化的(不会用 0 填充)。这样的设计让申请分配内存非常快，分配内存时可能包含有潜在敏感数据的内存段。使用 `Buffer.allocUnsafe()`创建的缓冲区没有完全重写内存，将有可能会在读取缓冲区数据的时候将老数据暴露出来。
 
 这就是使用 `Buffer.allocUnsafe()` 的优势，在使用的时候需要特别注意以免往应用中引入安全漏洞。
 
 [ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
 
-## Buffers and Character Encodings （缓存和字符编码）[#](#Buffers_and_Character_Encodings)
+## Buffers and Character Encodings （缓存和字符编码）
 `Buffer`实例通常用于序列编码字符例如 UTF-8 , UCS2,Base64 甚至 Hex-encoded 编码的数据缓存方面。使用明确的字符编码可以使 `Buffer`实例和二进制Javascript字符串之间来回转换成为可能。
 
 例如：
