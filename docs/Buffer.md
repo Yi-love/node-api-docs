@@ -60,7 +60,19 @@ Node.js V6 版本，可以使用 `Buffer`的构造函数创建，`Buffer`会根�
 *   `Buffer.alloc(size [,fill[,encoding]])` 返回一个已经初始化大小的`Buffer`实例。这个方法值得注意的是它比 `Buffer.allocUnsafe(size)`慢 ，但是它确保`Buffer`实例初始化内容不会包含敏感数据。
 *   `Buffer.allocUnsafe(size)` 和 `Buffer.allocUnsafeSlow(size)` 都会返回一个新的指定大小的缓冲区，内容必须使用 `Buffer.fill(0)`或者完全重写中的其中一种进行初始化。`Buffer.allocUnsafe()`会在共享内存池中分配内存，当大小小于等于`Buffer.poolSize`一半的时候返回`Buffer`实例。`Buffer.allocUnsafeSlow()`返回`Buffer`实例不是使用共享内存池分配内存。
 
+### `--zero-fill-buffers` 命令行参数
+>   Added in: v5.10.0
 
+Node.js 可以使用 `--zero-fill-buffers` 命令行参数强迫 `new Buffer(size)`,`Buffer.allocUnsafe()`,`Buffer.allocUnsafeSlow()` 或 `new SlowBuffer(size)`自动在 `zero-filled`上创建新的缓冲区。使用这种方法修改默认行为，可能会对性能产生重大的影响。建议只有在新分配的缓冲区不能包含敏感数据的时候才使用 `--zero-fill-buffers`。
 
+例如：
+
+```sh
+  $ node --zero-fill-buffers
+  > Buffer.allocUnsafe(5);
+  <Buffer 00 00 00 00 00>
+```
+
+### 是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？
 
 [ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
