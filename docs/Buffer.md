@@ -4,7 +4,7 @@
     *   Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()
         *   `--zero-fill-buffers` 命令行参数
         *   是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？
-    *   [Buffers and Character Encodings （缓存和字符编码）](#Buffers and Character Encodings （缓存和字符编码）)
+    *   [Buffers and Character Encodings （缓存和字符编码）](#Buffers_and_Character_Encodings)
 
 
 # Buffer
@@ -89,7 +89,7 @@ Node.js 可以使用 `--zero-fill-buffers` 命令行参数强迫 `new Buffer(siz
 
 [ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
 
-## Buffers and Character Encodings （缓存和字符编码）
+## Buffers and Character Encodings （缓存和字符编码）[#](#Buffers_and_Character_Encodings)
 `Buffer`实例通常用于序列编码字符例如 UTF-8 , UCS2,Base64 甚至 Hex-encoded 编码的数据缓存方面。使用明确的字符编码可以使 `Buffer`实例和二进制Javascript字符串之间来回转换成为可能。
 
 例如：
