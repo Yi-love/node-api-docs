@@ -106,5 +106,5 @@ Node.js最新支持的字符编码格式：
 
 提示：现在的浏览器跟着 [WHATWG spec][WHATWGspec] 把 'latin1' 和 ISO-8895-1 同时添加 win-1252 这个别名。这意味着当做一些像 `http.get()` 的事时，假如返回的字符编码在WHATWG spec规范中，有可能服务器会返回以win-1252编码的数据，并且使用 `'latin1'`编码格式对当前字符串解码。  
 
-[RFC4648,Section5]: https://tools.ietf.org/html/rfc4648#section-5
+[RFC4648Section5]: https://tools.ietf.org/html/rfc4648#section-5
 [WHATWGspec]: https://encoding.spec.whatwg.org/
