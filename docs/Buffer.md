@@ -1,10 +1,10 @@
 # 内容目录
 
-*   Buffer
+*   [Buffer](#Buffer)
     *   Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()
         *   `--zero-fill-buffers` 命令行参数
         *   是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？
-    *   Buffers and Character Encodings （缓存和字符编码）
+    *   [Buffers and Character Encodings （缓存和字符编码）](#Buffers and Character Encodings （缓存和字符编码）)
 
 
 # Buffer
