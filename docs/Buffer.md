@@ -3,7 +3,7 @@
 *   [Buffer](#buffer)
     *   [Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()](#bufferfrom-bufferalloc-和-bufferallocunsafe)
         *   [`--zero-fill-buffers` 命令行参数](#--zero-fill-buffers-命令行参数)
-        *   [是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？](#是什么让-bufferallocunsafe-和-bufferallocunsafeslow-不安全)
+        *   [是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全"？](#是什么让-bufferallocunsafe-和-bufferallocunsafeslow-不安全)
     *   [Buffers and Character Encodings （缓存和字符编码）](#buffers-and-character-encodings-缓存和字符编码)
 
 
@@ -82,7 +82,7 @@ Node.js 可以使用 `--zero-fill-buffers` 命令行参数强迫 `new Buffer(siz
   <Buffer 00 00 00 00 00>
 ```
 
-### 是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全" ？
+### 是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全"？
 使用 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` 分配内存的时候是不会初始化的(不会用 0 填充)。这样的设计让申请分配内存非常快，分配内存时可能包含有潜在敏感数据的内存段。使用 `Buffer.allocUnsafe()`创建的缓冲区没有完全重写内存，将有可能会在读取缓冲区数据的时候将老数据暴露出来。
 
 这就是使用 `Buffer.allocUnsafe()` 的优势，在使用的时候需要特别注意以免往应用中引入安全漏洞。
