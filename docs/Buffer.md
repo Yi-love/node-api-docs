@@ -7,7 +7,7 @@
     *   [Buffers and Character Encodings （缓存和字符编码）](#Buffers_and_Character_Encodings)
 
 
-# Buffer
+# Buffer [#](#Buffer)
 在 ECMAScript 2015 (ES6) [TypedArray][TypedArray] 之前，JavaScript语言是没有机制去读取和处理二进制文件流的。
 Node.js API 引进`Buffer`类是为了让它能处理上下文像TCP流和文件系统操作流一样的8位字节的流。
 
