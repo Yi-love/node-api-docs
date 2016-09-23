@@ -99,12 +99,12 @@ Node.js最新支持的字符编码格式：
 *   `'utf-8'` - 多字节编码的Unicode字符。许多web页面和文档都支持使用 utf-8。
 *   `'uft16le'` - 2 或 4字节，低位优先的Unicode字符编码格式。支持（U+10000 到 U+10FFFF）。
 *   `'ucs2'` - `'utf16le'`的别名。
-*   `'base64'` - Base64编码。在创建一个字符串类型的 `Buffer`是，这种编码能正确的解析 "URL and Filename Safe Alphabet" 在 [RFC4648, Section 5][RFC4648, Section 5]。
+*   `'base64'` - Base64编码。在创建一个字符串类型的 `Buffer`是，这种编码能正确的解析 "URL and Filename Safe Alphabet" 在 [RFC4648, Section 5][RFC4648Section5]。
 *   `'latin1'` - 一种可以对单字节字符串进行编码的方法(as defined by the IANA in RFC1345, page 63, to be the Latin-1 supplement block and C0/C1 control codes)。
 *   `'binary'` - `'latin1'` 的别名。
 *   `'hex'` - 每个字节对应2个16进制编码。
 
-提示：现在的浏览器跟着 [WHATWG spec][ WHATWG spec] 把 'latin1' 和 ISO-8895-1 同时添加 win-1252 这个别名。这意味着当做一些像 `http.get()` 的事时，假如返回的字符编码在WHATWG spec规范中，有可能服务器会返回以win-1252编码的数据，并且使用 `'latin1'`编码格式对当前字符串解码。  
+提示：现在的浏览器跟着 [WHATWG spec][WHATWGspec] 把 'latin1' 和 ISO-8895-1 同时添加 win-1252 这个别名。这意味着当做一些像 `http.get()` 的事时，假如返回的字符编码在WHATWG spec规范中，有可能服务器会返回以win-1252编码的数据，并且使用 `'latin1'`编码格式对当前字符串解码。  
 
-[RFC4648, Section 5]: https://tools.ietf.org/html/rfc4648#section-5
-[WHATWG spec]: https://encoding.spec.whatwg.org/
+[RFC4648,Section5]: https://tools.ietf.org/html/rfc4648#section-5
+[WHATWGspec]: https://encoding.spec.whatwg.org/
