@@ -10,7 +10,7 @@
     *   [Class:Buffer](#classbuffer)
         *   [new Buffer(array)](#new-bufferarray)
         *   [new Buffer(buffer)](#new-bufferbuffer)
-        *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-bufferarrybufferbyteoffsetlength)
+        *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-bufferarraybufferbyteoffsetlength)
         *   [new Buffer(size)](#new-buffersize)
         *   [new Buffer(string[,encoding])](#new-bufferstringencoding)
 
