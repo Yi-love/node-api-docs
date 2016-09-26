@@ -5,9 +5,12 @@
         *   [`--zero-fill-buffers` 命令行参数](#--zero-fill-buffers-命令行参数)
         *   [是什么让 `Buffer.allocUnsafe()` 和 `Buffer.allocUnsafeSlow()` "不安全"？](#是什么让-bufferallocunsafe-和-bufferallocunsafeslow-不安全)
     *   [Buffers and Character Encodings （缓存和字符编码）](#buffers-and-character-encodings-缓存和字符编码)
-
+    *   [Buffers and TypedArray](#buffers-and-typedarray)
+    *   [Buffers and ES6 iteration](#buffers-and-es6-iteration)
 
 # Buffer
+> Stability: 稳定的
+
 在 ECMAScript 2015 (ES6) [TypedArray][TypedArray] 之前，JavaScript语言是没有机制去读取和处理二进制文件流的。
 Node.js API 引进`Buffer`类是为了让它能处理上下文像TCP流和文件系统操作流一样的8位字节的流。
 
@@ -45,10 +48,6 @@ ES6已经添加了 [TypedArray][TypedArray] ，`Buffer` 实现了 [Uint8Array] A
   //创建编码为 UTF-8 [0x74, 0xc3, 0xa9, 0x73, 0x74] 的 Buffer
   const buf6 = Buffer.from('tést', 'utf8'); //<Buffer 74 c3 a9 73 74>
 ```
-
-[TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
-[Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
-
 
 ## Buffer.from(), Buffer.alloc(), 和 Buffer.allocUnsafe()
 Node.js V6 版本，可以使用 `Buffer`的构造函数创建，`Buffer`会根据参数的不同选择选择其中的一种分配形式返回。
@@ -115,5 +114,76 @@ Node.js最新支持的字符编码格式：
 
 提示：现在的浏览器跟着 [WHATWG spec][WHATWGspec] 把 'latin1' 和 ISO-8895-1 同时添加 win-1252 这个别名。这意味着当做一些像 `http.get()` 的事时，假如返回的字符编码在WHATWG spec规范中，有可能服务器会返回以win-1252编码的数据，并且使用 `'latin1'`编码格式对当前字符串解码。  
 
+## Buffers and TypedArray
+`Buffer` 实例同样是 [Uint8Array][Uint8Array] 的实例。然而，在 ECMAScript 2015 中它们在实现TypedArray规范上还是存在一些小的不兼容。例如，
+[ArrayBuffer#slice][ArrayBuffer-Slice]会返回切片部分的副本，[Buffer#slice][Buffer-slice]的实现是复用现在的`Buffer`而不是复制，从而使
+[Buffer#slice][Buffer-slice]更高效。
+
+根据如下说明也可以从`Buffer`中创建新的 [TypedArray][TypedArray]实例：
+
+*   `Buffer`对象内存是拷贝到[TypedArray][TypedArray],不是共享。
+*   `Buffer`对象内存被解析成包含特定元素的数组，而不是一个字节数组的目标类型。就是说，`new Uint32Array(Buffer.from([1,2,3,4]))` 通过元素 `[1,2,3,4]`创建了一个4个元素的 `Uint32Array`,而不是一个单个元素 `[0x1020304]` 或 `[0x4030201]`的 `Uint32Array`。
+
+使用TypedArray对象的`.buffer`属性可以创建一个新的与 [TypedArray][TypedArray]实例共享内存的 `Buffer`缓冲区。
+
+例如：
+
+```js
+  const arr = new Uint16Array(2);
+
+  arr[0] = 5000;
+  arr[1] = 4000;
+
+  // Copies the contents of `arr`
+  const buf1 = Buffer.from(arr);
+
+  // Shares memory with `arr`
+  const buf2 = Buffer.from(arr.buffer);
+
+  // Prints: <Buffer 88 a0>
+  console.log(buf1);
+
+  // Prints: <Buffer 88 13 a0 0f>
+  console.log(buf2);
+
+  arr[1] = 6000;
+
+  // Prints: <Buffer 88 a0>
+  console.log(buf1);
+
+  // Prints: <Buffer 88 13 70 17>
+  console.log(buf2);
+```
+注意在使用 [TypedArray][TypedArray] 对象的`.buffer`属性的时候，可以传人`byteOffset`和`length`参数来指定使用范围以内的 [ArrayBuffer][ArrayBuffer]。
+
+例如：
+
+```js
+  const arr = new Uint16Array(20);
+  const buf = Buffer.from(arr.buffer, 0, 16);
+
+  // Prints: 16
+  console.log(buf.length);
+```
+
+`Buffer.from()` 和 [TypedArray.from()][TypedArray-from] (例如：`Uint8Array.from`)有着不同的特点和实现。特别是, [TypedArray][TypedArray]另一种传参是第二个参数传人一个映射函数匹配参数数组的每一个元素。
+
+*   `TypedArray.from(source[, mapFn[, thisArg]])`
+
+然而 `Buffer.from()`方法，没有提供映射函数：
+
+*   [Buffer.from(array)]
+*   [Buffer.from(buffer)]
+*   [Buffer.from(arrayBuffer[,byteOffset [,length]])]
+*   [Buffer.from(string[,encoding])]
+
+## Buffers and ES6 iteration
+
+
+[TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
+[TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
+[Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
 [RFC4648Section5]: https://tools.ietf.org/html/rfc4648#section-5
 [WHATWGspec]: https://encoding.spec.whatwg.org/
+[ArrayBuffer-Slice]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
+[Buffer-slice]: https://nodejs.org/dist/latest-v6.x/docs/api/buffer.html#buffer_buf_slice_start_end
