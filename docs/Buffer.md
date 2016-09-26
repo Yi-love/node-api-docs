@@ -7,12 +7,12 @@
     *   [Buffers and Character Encodings （缓存和字符编码）](#buffers-and-character-encodings-缓存和字符编码)
     *   [Buffers and TypedArray](#buffers-and-typedarray)
     *   [Buffers and ES6 iteration](#buffers-and-es6-iteration)
-    *   [Class:Buffer](#class-buffer)
-        *   [new Buffer(array)](#new-buffer-array)
-        *   [new Buffer(buffer)](#new-buffer-buffer)
-        *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-buffer-arrybuffer-byteoffset-length)
-        *   [new Buffer(size)](#new-buffer-size)
-        *   [new Buffer(string[,encoding])](#new-buffer-string-encoding)
+    *   [Class:Buffer](#classbuffer)
+        *   [new Buffer(array)](#new-bufferarray)
+        *   [new Buffer(buffer)](#new-bufferbuffer)
+        *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-bufferarrybufferbyteoffsetlength)
+        *   [new Buffer(size)](#new-buffersize)
+        *   [new Buffer(string[,encoding])](#new-bufferstringencoding)
 
 # Buffer
 > Stability: 稳定的
