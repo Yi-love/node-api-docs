@@ -7,6 +7,12 @@
     *   [Buffers and Character Encodings （缓存和字符编码）](#buffers-and-character-encodings-缓存和字符编码)
     *   [Buffers and TypedArray](#buffers-and-typedarray)
     *   [Buffers and ES6 iteration](#buffers-and-es6-iteration)
+    *   [Class:Buffer](#class-buffer)
+        *   [new Buffer(array)](#new-buffer-array)
+        *   [new Buffer(buffer)](#new-buffer-buffer)
+        *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-buffer-arrybuffer-byteoffset-length)
+        *   [new Buffer(size)](#new-buffer-size)
+        *   [new Buffer(string[,encoding])](#new-buffer-string-encoding)
 
 # Buffer
 > Stability: 稳定的
@@ -121,7 +127,7 @@ Node.js最新支持的字符编码格式：
 
 根据如下说明也可以从`Buffer`中创建新的 [TypedArray][TypedArray]实例：
 
-*   `Buffer`对象内存是拷贝到[TypedArray][TypedArray],不是共享。
+*   `Buffer`对象内存是复制到[TypedArray][TypedArray],不是共享。
 *   `Buffer`对象内存被解析成包含特定元素的数组，而不是一个字节数组的目标类型。就是说，`new Uint32Array(Buffer.from([1,2,3,4]))` 通过元素 `[1,2,3,4]`创建了一个4个元素的 `Uint32Array`,而不是一个单个元素 `[0x1020304]` 或 `[0x4030201]`的 `Uint32Array`。
 
 使用TypedArray对象的`.buffer`属性可以创建一个新的与 [TypedArray][TypedArray]实例共享内存的 `Buffer`缓冲区。
@@ -178,7 +184,126 @@ Node.js最新支持的字符编码格式：
 *   [Buffer.from(string[,encoding])]
 
 ## Buffers and ES6 iteration
+`Buffer`实例可以使用 ECMAScript 2015 (ES6) 的 `for..of` 语法迭代器遍历。
 
+例如：
+
+```js
+  const buf = Buffer.from([1,2,3]);
+
+  for(var b of buf) {
+    console.log(b); // 1 2 3
+  }
+``` 
+
+另外，[buf.values()] , [buf.keys()] , 和 [buf.entries()]方法都可以用来创建迭代器。
+
+
+## Class:Buffer
+`Buffer`类是一个全局类用来直接处理二进制数据。可以使用多种方式创建。
+
+### new Buffer(array)
+>   弃用：v6.0.0+
+
+>   用 `Buffer.from(array)` 代替 
+
+*   `array` [<Array>][Array] 复制数组中的字节。
+
+分配一个新的`Buffer`缓冲区使用8位字节数组。
+
+例如：
+
+```js
+  // Creates a new Buffer containing the ASCII bytes of the string 'buffer'
+  const buf = new Buffer([0x62, 0x75, 0x66, 0x66, 0x65, 0x72]);
+```
+### new Buffer(buffer)
+>   弃用：v6.0.0+
+
+>   用 ` Buffer.from(buffer)`代替
+
+*   `buffer`[<Buffer>](#class-buffer) 从当前 `Buffer`复制数据
+
+复制缓冲区数据到新的 `Buffer` 实例。
+
+例如:
+
+```js
+  const buf1 = new Buffer('buffer');
+  const buf2 = new Buffer(buf1);
+
+  buf1[0] = 0x61;
+
+  // Prints: auffer
+  console.log(buf1.toString());
+
+  // Prints: buffer
+  console.log(buf2.toString());
+```
+
+### new Buffer(arrayBuffer[,byteOffset[,length]])
+>   弃用：v6.0.0+
+
+>   用 `Buffer.from(arrayBuffer[,byteOffset[,length]]) 代替
+
+*   `arrayBuffer` [<ArrayBuffer>][ArrayBuffer]  [TypedArray][TypedArray] 的`.buffer`属性值或 [ArrayBuffer][ArrayBuffer]。
+*   `byteOfset` <Integer> 从那个位置开始复制 `arrayBuffer` 。 默认：开始位置：0。
+*   `length`<Integer> 需要从`arrayBuffer`复制多少字节的数据。默认：`arrayBuffer.length-byteOffset`。 
+
+当引用 [TypedArray][TypedArray]实例的`.buffer`属性值时，新创建的缓冲区将与[TypedArray][TypedArray]共享相同部分的内存。
+
+可选`byteOffset`和`length` 参数指定内存范围内的 `arrayBuffer` 将共享`Buffer`缓冲区。
+
+例如：
+
+```js
+  const arr = new Uint16Array(2);
+
+  arr[0] = 5000;
+  arr[1] = 4000;
+
+  // Shares memory with `arr`
+  const buf = new Buffer(arr.buffer);
+
+  // Prints: <Buffer 88 13 a0 0f>
+  console.log(buf);
+
+  // Changing the original Uint16Array changes the Buffer also
+  arr[1] = 6000;
+
+  // Prints: <Buffer 88 13 70 17>
+  console.log(buf);
+```
+
+### new Buffer(size)
+>   弃用：v6.0.0+
+
+>   用 `Buffer.alloc(size)` ( 通常用 `Buffer.allocUnsafe(size)`)
+
+*   `size` <Integer> 创建 `Buffer` 的长度。
+
+创建分配内存大小为 `size` 大小字节的`Buffer`。`size`必须小于等于可以分配内存的最大限制`buffer.kMaxLength`。反之，则会抛出范围错误。`size <= 0`则会创建长度为0的`Buffer`。
+
+不像 [ArrayBuffer][ArrayBuffer] , ·`Buffer`实例底下暂用的内存不会在创建的时候初始化。创建的`Buffer`是未知的并且可能包含敏感数据。使用 `buf.fill(0)` 去初始化`Buffer`为 0。
+
+例如：
+
+```js
+  const buf = new Buffer(5);
+
+  // Prints (contents may vary): <Buffer 78 e0 82 02 01>
+  console.log(buf);
+
+  buf.fill(0);
+
+  // Prints: <Buffer 00 00 00 00 00>
+  console.log(buf);
+```
+
+### new Buffer(string[,encoding])
+>   弃用：v6.0.0+
+
+>   用 `Buffer.from(string[,encoding])` 代替
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
@@ -187,3 +312,5 @@ Node.js最新支持的字符编码格式：
 [WHATWGspec]: https://encoding.spec.whatwg.org/
 [ArrayBuffer-Slice]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/slice
 [Buffer-slice]: https://nodejs.org/dist/latest-v6.x/docs/api/buffer.html#buffer_buf_slice_start_end
+[Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+[ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
