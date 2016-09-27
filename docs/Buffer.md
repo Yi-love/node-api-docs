@@ -17,10 +17,11 @@
         *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
         *   [Class Method: Buffer.allocUnsafeSlow(size)](#class-methodbufferallocunsafeslowsize)
         *   [Class Method: Buffer.byteLength(string[, encoding])](#class-method-bufferbytelengthstring-encoding)
-        *   [Class Method: Buffer.compare(buf1, buf2)]()
-        *   [Class Method: Buffer.concat(list[, totalLength])]()
-        *   [Class Method: Buffer.from(array)]()
-        *   [Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])]()
+        *   [Class Method: Buffer.compare(buf1, buf2)](#class-method-buffercomparebuf1-buf2)
+        *   [Class Method: Buffer.concat(list[, totalLength])](#class-method-bufferconcatlist-totallength)
+        *   [Class Method: Buffer.from(array)](#class-method-bufferfromarray)
+        *   [Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])](#class-method-bufferfromarraybuffer-byteoffset-length)
+        *   [Class Method: Buffer.from(buffer)](#class-method-bufferfrombuffer)
 
 # Buffer
 > Stability: 稳定的
