@@ -22,13 +22,13 @@
         *   [Class Method: Buffer.from(array)](#class-method-bufferfromarray)
         *   [Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])](#class-method-bufferfromarraybuffer-byteoffset-length)
         *   [Class Method: Buffer.from(buffer)](#class-method-bufferfrombuffer)
-        *   [Class Method: Buffer.from(string[, encoding])]
-        *   [Class Method: Buffer.isBuffer(obj)]
-        *   [Class Method: Buffer.isEncoding(encoding)]
-        *   [Class Property: Buffer.poolSize]
-        *   [buf[index]]
-        *   [buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])]
-        *   [buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])]
+        *   [Class Method: Buffer.from(string[, encoding])](#class-method-bufferfromstring-encoding)
+        *   [Class Method: Buffer.isBuffer(obj)](#class-method-bufferisbufferobj)
+        *   [Class Method: Buffer.isEncoding(encoding)](#class-method-bufferisencodingencoding)
+        *   [Class Property: Buffer.poolSize](#class-property-bufferpoolsize)
+        *   [buf[index]](#bufindex)
+        *   [buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])](#bufcomparetarget-targetstart-targetend-sourcestart-sourceend)
+        *   [buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])]()
 
 # Buffer
 > Stability: 稳定的
@@ -651,6 +651,7 @@ Node.js最新支持的字符编码格式：
 *   `obj` [<Object>][Object]
 *   返回： [<Boolean>][Boolean]
 
+
 如果 `obj` 是 `Buffer`类型返回 `true` ，反之，返回 `false`。
 
 ### Class Method: Buffer.isEncoding(encoding)
@@ -668,7 +669,8 @@ Node.js最新支持的字符编码格式：
 
 这是用来确定的字节数预先分配的大小,用于内部`Buffer`缓冲区实例。这个值可以被修改。 
 
-#### buf[index]
+
+### buf[index]
 索引操作符(指数)可用于获取和设置缓冲区索引位置的8位`buf`值。指的是单个字节的值,所以规定的有效范围是0 x00至0 xff(十六进制)或0和255(十进制)。
 
 例如：将一个ASCII字符串复制到缓冲区,一次一个字节
@@ -684,6 +686,7 @@ Node.js最新支持的字符编码格式：
   // Prints: Node.js
   console.log(buf.toString('ascii'));
 ```
+
 
 ### buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])
 >   v0.11.13
