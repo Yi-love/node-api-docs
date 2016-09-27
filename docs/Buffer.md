@@ -13,8 +13,8 @@
         *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-bufferarraybufferbyteoffsetlength)
         *   [new Buffer(size)](#new-buffersize)
         *   [new Buffer(string[,encoding])](#new-bufferstringencoding)
-        *   [Class Method: Buffer.alloc(size[, fill[, encoding]])]()
-        *   [Class Method: Buffer.allocUnsafe(size)](#class-method)
+        *   [Class Method: Buffer.alloc(size[, fill[, encoding]])](#class-methodbufferallocsizefillencoding)
+        *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
 
 # Buffer
 > Stability: 稳定的
@@ -401,11 +401,7 @@ Node.js最新支持的字符编码格式：
 
 `size`如果不是数字会报类型错误。
 
-
-`Buffer`模块会根据`Buffer.poolSize`大小采用预分配创建`Buffer`实例。只有当在使用 [Buffer.allocUnsafe()](#buffer) 并且`size`小于等于`Buffer.poolSize`的一半的时候，会采用快速分配创建缓冲区。
-
-
-
+`Buffer`模块会根据`Buffer.poolSize`大小采用预分配创建`Buffer`实例。只有当在使用 [Buffer.allocUnsafe()](#class-methodbufferallocunsafesize) 并且`size`小于等于`Buffer.poolSize`的一半的时候，会采用快速分配创建缓冲区。
 
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
