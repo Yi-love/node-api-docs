@@ -223,7 +223,7 @@ Node.js最新支持的字符编码格式：
 
 >   用 `Buffer.from(array)` 代替 
 
-*   `array` [<Array>][Array] 复制数组中的字节。
+*   `array` [\<Array\>][Array] 复制数组中的字节。
 
 分配一个新的`Buffer`缓冲区使用8位字节数组。
 
@@ -238,7 +238,7 @@ Node.js最新支持的字符编码格式：
 
 >   用 ` Buffer.from(buffer)`代替
 
-*   `buffer`[<Buffer>](#class-buffer) 从当前 `Buffer`复制数据
+*   `buffer`[\<Buffer\>](#class-buffer) 从当前 `Buffer`复制数据
 
 复制缓冲区数据到新的 `Buffer` 实例。
 
@@ -262,7 +262,7 @@ Node.js最新支持的字符编码格式：
 
 >   用 `Buffer.from(arrayBuffer[,byteOffset[,length]]) 代替
 
-*   `arrayBuffer` [<ArrayBuffer>][ArrayBuffer]  [TypedArray][TypedArray] 的`.buffer`属性值或 [ArrayBuffer][ArrayBuffer]。
+*   `arrayBuffer` [\<ArrayBuffer\>][ArrayBuffer]  [TypedArray][TypedArray] 的`.buffer`属性值或 [ArrayBuffer][ArrayBuffer]。
 *   `byteOfset` <Integer> 从那个位置开始复制 `arrayBuffer` 。 默认：开始位置：0。
 *   `length`<Integer> 需要从`arrayBuffer`复制多少字节的数据。默认：`arrayBuffer.length-byteOffset`。 
 
@@ -322,8 +322,8 @@ Node.js最新支持的字符编码格式：
 >   用 `Buffer.from(string[,encoding])` 代替
 
 
-*   `string` [<String>][String] 需要编码的字符串
-*   `encoding` [<String>][String] 编码格式。默认：`'utf-8'`
+*   `string` [\<String\>][String] 需要编码的字符串
+*   `encoding` [\<String\>][String] 编码格式。默认：`'utf-8'`
 
 根据JavaScript字符串内容创建新的 `Buffer` 缓冲区。如果传人了编码格式参数那么将根据提供的编码格式编码字符串。
 
@@ -349,8 +349,8 @@ Node.js最新支持的字符编码格式：
 >   v5.10.0+
 
 *   `size` <Integer> `Buffer`缓冲区的大小
-*   `fill` [<String>][String] | [<Buffer>](#classbuffer) | <Integer> 初始化缓冲区的值。默认为：0
-*   `encoding` [<String>][String] 编码格式。默认： `'utf-8'`
+*   `fill` [\<String\>][String] | [\<Buffer\>](#classbuffer) | <Integer> 初始化缓冲区的值。默认为：0
+*   `encoding` [\<String\>][String] 编码格式。默认： `'utf-8'`
 
 创建一个大小为 `size`字节 的缓冲区。如果参数`fill`是`undefined` , `Buffer`缓冲区将使用 `0` 填充。
 
@@ -459,8 +459,8 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.byteLength(string[, encoding])
 > v0.1.90+
 
-*   `string` [<String>][String] | [<Buffer>](#buffer) | <TypedArray> | [<DataView>][DataView] | [<ArrayBuffer>][ArrayBuffer] 用来计算长度的值
-*   `encoding` [<String>][String] 如果是字符串，那么就是编码格式。默认为： `'utf-8'`
+*   `string` [\<String\>][String] | [\<Buffer\>](#buffer) | <TypedArray> | [\<DataView\>][DataView] | [\<ArrayBuffer\>][ArrayBuffer] 用来计算长度的值
+*   `encoding` [\<String\>][String] 如果是字符串，那么就是编码格式。默认为： `'utf-8'`
 *   返回：<Integer> 返回字符串内容的字节长度
 
 返回字符串实际字节长度。它不同于类似 [String.prototype.length][String-prototype-length] 返回字符长度。
@@ -482,8 +482,8 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.compare(buf1, buf2)
 >   v0.11.13+
 
-*   `buf1` [<Buffer>](#buffer)
-*   `buf2` [<Buffer>](#buffer)
+*   `buf1` [\<Buffer\>](#buffer)
+*   `buf2` [\<Buffer\>](#buffer)
 *   返回： <Integer>
 
 通常目的是比较 `buf1`和`buf2` 的缓冲区数组。等同于 [buf1.compare(buf2)]()。
@@ -503,9 +503,9 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.concat(list[, totalLength])
 > v0.7.11+
 
-*   `list` [<Array>][Array] 需要合并的`Buffer`列表
+*   `list` [\<Array\>][Array] 需要合并的`Buffer`列表
 *   `totalLength` <Integer> 合并之后的`Buffer`实例总长度
-*   返回： [<Buffer>](#buffer)
+*   返回： [\<Buffer\>](#buffer)
 
 在`Buffer`实例与列表合并之后，返回一个新的`Buffer`实例。
 
@@ -536,7 +536,7 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.from(array)
 >   v5.10.0+
 
-*  `array` [<Array>][Array]
+*  `array` [\<Array\>][Array]
 
 把参数`array`内容按八位分配成一个新的缓冲区。
 
@@ -552,7 +552,7 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])
 >   v5.10.0+
 
-*   `arrayBuffer` [<ArrayBuffer>][ArrayBuffer] [ArrayBuffer][ArrayBuffer] 或 [TypedArray][TypedArray] `.buffer`属性返回值
+*   `arrayBuffer` [\<ArrayBuffer\>][ArrayBuffer] [ArrayBuffer][ArrayBuffer] 或 [TypedArray][TypedArray] `.buffer`属性返回值
 *   `byteOffset` <Integer> 从哪个位置开始复制`arrayBuffer`。 默认为：0
 *   `length` <Integer> 需要从`arrayBuffer`上面复制的长度。默认 `arrayBuffer.length -byteOffset`
 
@@ -596,7 +596,7 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.from(buffer)
 >   v5.10.0+
 
-*   `buffer` [<Buffer>](#buffer) 复制一个存在的`Buffer`缓冲区
+*   `buffer` [\<Buffer\>](#buffer) 复制一个存在的`Buffer`缓冲区
 
 复制旧的`buffer`缓冲区到新的 `Buffer`实例。
 
@@ -620,8 +620,8 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.from(string[, encoding])
 >   v5.10.0+
 
-*   `string` [<String>][String] 需要进行编码的字符串
-*   `encoding` [<String>] 编码格式。默认：`'utf-8'`
+*   `string` [\<String\>][String] 需要进行编码的字符串
+*   `encoding` [\<String\>] 编码格式。默认：`'utf-8'`
 
 根据JavaScript字符串内容创建新的 `Buffer` 缓冲区。如果传人了编码格式参数那么将根据提供的编码格式编码字符串。
 
@@ -648,16 +648,16 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.isBuffer(obj)
 >   v0.1.101+
 
-*   `obj`  [<Object>]
-*   返回： [<Boolean>] 
+*   `obj`  [\<Object\>][Object]
+*   返回： [\<Boolean\>][Boolean] 
 
 如果 `obj` 是 `Buffer`类型返回 `true` ，反之，返回 `false`。
 
 ### Class Method: Buffer.isEncoding(encoding)
 >   v0.9.1
 
-*   `encoding` [<String>] 需要判断的字符编码
-*   返回：[<Boolean>]
+*   `encoding` [\<String\>][String] 需要判断的字符编码
+*   返回：[\<Boolean\>][Boolean]
 
 如果 传人`encoding`是该字符编码返回 `true` ， 反之 `false`。
 
