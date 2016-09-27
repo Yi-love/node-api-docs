@@ -16,6 +16,8 @@
         *   [Class Method: Buffer.alloc(size[, fill[, encoding]])](#class-methodbufferallocsizefillencoding)
         *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
         *   [Class Method: Buffer.allocUnsafeSlow(size)](#class-methodbufferallocunsafeslowsize)
+        *   [Class Method: Buffer.byteLength(string[, encoding])](#class-methodbufferbytelengthstringencoding)
+
 # Buffer
 > Stability: 稳定的
 
@@ -417,7 +419,33 @@ Node.js最新支持的字符编码格式：
 
 当使用 [Buffer.allocUnsafeSlow()](#class-methodbufferallocunsafeslowsize) 创建`Buffer`缓冲区实例，当大小小于4kb时，默认按4kb分配缓冲区。它允许应用创建更多`Buffer`实例时避免更多垃圾回收开销。通过消除需要跟踪和清理持久对象可以提高性能和内存的使用。
 
+然而，开发者在一些场景在不确定的时间上需要一小块内存池，使用`Buffer.allocUnsafeSlow()`创建一块适当的内存池，然后复制相关部分。
 
+例如：
+
+```js
+  // Need to keep around a few small chunks of memory
+  const store = [];
+
+  socket.on('readable', () => {
+    const data = socket.read();
+
+    // Allocate for retained data
+    const sb = Buffer.allocUnsafeSlow(10);
+
+    // Copy the data into the new allocation
+    data.copy(sb, 0, 0, 10);
+
+    store.push(sb);
+  });
+```
+
+开发者保证使用`Buffer.allocUnsafeSlow()`这是最后的一种手段，在对内存使用有严格要求的应用。
+
+`size`如果不是数字会报类型错误。
+
+### Class Method: Buffer.byteLength(string[, encoding])
+> v0.1.90+
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
