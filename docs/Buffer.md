@@ -22,6 +22,13 @@
         *   [Class Method: Buffer.from(array)](#class-method-bufferfromarray)
         *   [Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])](#class-method-bufferfromarraybuffer-byteoffset-length)
         *   [Class Method: Buffer.from(buffer)](#class-method-bufferfrombuffer)
+        *   [Class Method: Buffer.from(string[, encoding])]
+        *   [Class Method: Buffer.isBuffer(obj)]
+        *   [Class Method: Buffer.isEncoding(encoding)]
+        *   [Class Property: Buffer.poolSize]
+        *   [buf[index]]
+        *   [buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])]
+        *   [buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])]
 
 # Buffer
 > Stability: 稳定的
@@ -587,6 +594,100 @@ Node.js最新支持的字符编码格式：
 `arrayBuffer`不是一个 [ArrayBuffer][ArrayBuffer] 类型的参数将会报出类型错误。
 
 ### Class Method: Buffer.from(buffer)
+>   v5.10.0+
+
+*   `buffer` [<Buffer>](#buffer) 复制一个存在的`Buffer`缓冲区
+
+复制旧的`buffer`缓冲区到新的 `Buffer`实例。
+
+例如：
+
+```js
+  const buf1 = Buffer.from('buffer');
+  const buf2 = Buffer.from(buf1);
+
+  buf1[0] = 0x61;
+
+  // Prints: auffer
+  console.log(buf1.toString());
+
+  // Prints: buffer
+  console.log(buf2.toString());
+```
+
+如果`buffer`参数不是 `Buffer`类型，将会报类型错误。
+
+### Class Method: Buffer.from(string[, encoding])
+>   v5.10.0+
+
+*   `string` [<String>][String] 需要进行编码的字符串
+*   `encoding` [<String>] 编码格式。默认：`'utf-8'`
+
+根据JavaScript字符串内容创建新的 `Buffer` 缓冲区。如果传人了编码格式参数那么将根据提供的编码格式编码字符串。
+
+例如：
+
+```js
+  const buf1 = Buffer.from('this is a tést');
+
+  // Prints: this is a tést
+  console.log(buf1.toString());
+
+  // Prints: this is a tC)st
+  console.log(buf1.toString('ascii'));
+
+
+  const buf2 = Buffer.from('7468697320697320612074c3a97374', 'hex');
+
+  // Prints: this is a tést
+  console.log(buf2.toString());
+```
+
+`string`参数不是字符串将报类型错误。
+
+### Class Method: Buffer.isBuffer(obj)
+>   v0.1.101+
+
+*   `obj` [<Object>][Object]
+*   返回： [<Boolean>][Boolean]
+
+如果 `obj` 是 `Buffer`类型返回 `true` ，反之，返回 `false`。
+
+### Class Method: Buffer.isEncoding(encoding)
+>   v0.9.1
+
+*   `encoding` [<String>][String] 需要判断的字符编码
+*   返回：[<Boolean>][Boolean]
+
+如果 传人`encoding`是该字符编码返回 `true` ， 反之 `false`。
+
+### Class Property: Buffer.poolSize
+> v0.11.3
+
+*   <Integer> 默认：8192
+
+这是用来确定的字节数预先分配的大小,用于内部`Buffer`缓冲区实例。这个值可以被修改。 
+
+#### buf[index]
+索引操作符(指数)可用于获取和设置缓冲区索引位置的8位`buf`值。指的是单个字节的值,所以规定的有效范围是0 x00至0 xff(十六进制)或0和255(十进制)。
+
+例如：将一个ASCII字符串复制到缓冲区,一次一个字节
+
+```js
+  const str = 'Node.js';
+  const buf = Buffer.allocUnsafe(str.length);
+
+  for (let i = 0; i < str.length ; i++) {
+    buf[i] = str.charCodeAt(i);
+  }
+
+  // Prints: Node.js
+  console.log(buf.toString('ascii'));
+```
+
+### buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])
+>   v0.11.13
+
 
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
@@ -601,3 +702,5 @@ Node.js最新支持的字符编码格式：
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [String-prototype-length]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
 [DataView]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView
+[Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+[Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
