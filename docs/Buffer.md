@@ -17,6 +17,10 @@
         *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
         *   [Class Method: Buffer.allocUnsafeSlow(size)](#class-methodbufferallocunsafeslowsize)
         *   [Class Method: Buffer.byteLength(string[, encoding])](#class-method-bufferbytelengthstring-encoding)
+        *   [Class Method: Buffer.compare(buf1, buf2)]()
+        *   [Class Method: Buffer.concat(list[, totalLength])]()
+        *   [Class Method: Buffer.from(array)]()
+        *   [Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])]()
 
 # Buffer
 > Stability: 稳定的
@@ -447,6 +451,143 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.byteLength(string[, encoding])
 > v0.1.90+
 
+*   `string` [<String>][String] | [<Buffer>](#buffer) | <TypedArray> | [<DataView>][DataView] | [<ArrayBuffer>][ArrayBuffer] 用来计算长度的值
+*   `encoding` [<String>][String] 如果是字符串，那么就是编码格式。默认为： `'utf-8'`
+*   返回：<Integer> 返回字符串内容的字节长度
+
+返回字符串实际字节长度。它不同于类似 [String.prototype.length][String-prototype-length] 返回字符长度。
+
+例如：
+
+```js
+  const str = '\u00bd + \u00bc = \u00be';
+
+  // Prints: ½ + ¼ = ¾: 9 characters, 12 bytes
+  console.log(`${str}: ${str.length} characters, ` +
+              `${Buffer.byteLength(str, 'utf8')} bytes`);
+```
+
+当字符串是一个 `Buffer` / [DataView][DataView] / [TypedArray][TypedArray] / [ArrayBuffer][ArrayBuffer] , 将返回实际字节长度。
+
+否则,转换为字符串,并返回字符串的字节长度。
+
+### Class Method: Buffer.compare(buf1, buf2)
+>   v0.11.13+
+
+*   `buf1` [<Buffer>](#buffer)
+*   `buf2` [<Buffer>](#buffer)
+*   返回： <Integer>
+
+通常目的是比较 `buf1`和`buf2` 的缓冲区数组。等同于 [buf1.compare(buf2)]()。
+
+例如：
+
+```js
+  const buf1 = Buffer.from('1234');
+  const buf2 = Buffer.from('0123');
+  const arr = [buf1, buf2];
+
+  // Prints: [ <Buffer 30 31 32 33>, <Buffer 31 32 33 34> ]
+  // (This result is equal to: [buf2, buf1])
+  console.log(arr.sort(Buffer.compare));
+```
+
+### Class Method: Buffer.concat(list[, totalLength])
+> v0.7.11+
+
+*   `list` [<Array>][Array] 需要合并的`Buffer`列表
+*   `totalLength` <Integer> 合并之后的`Buffer`实例总长度
+*   返回： [<Buffer>](#buffer)
+
+在`Buffer`实例与列表合并之后，返回一个新的`Buffer`实例。
+
+如果列表为空，或者`totalLength` 为0 ，将返回一个长度为0的`Buffer`实例。
+
+如果没有传人`totalLength`参数，那么将把列表里面每个`Buffer`实例的长度加起来。这个但是会导致额外的循环去计算totalLength,所以更快的方法就是提供长度，在已知长度的情况下。
+
+例如：用3个`Buffer`实例列表来创建一个`Buffer`实例。
+
+```js
+  const buf1 = Buffer.alloc(10);
+  const buf2 = Buffer.alloc(14);
+  const buf3 = Buffer.alloc(18);
+  const totalLength = buf1.length + buf2.length + buf3.length;
+
+  // Prints: 42
+  console.log(totalLength);
+
+  const bufA = Buffer.concat([buf1, buf2, buf3], totalLength);
+
+  // Prints: <Buffer 00 00 00 00 ...>
+  console.log(bufA);
+
+  // Prints: 42
+  console.log(bufA.length);
+```
+
+### Class Method: Buffer.from(array)
+>   v5.10.0+
+
+*  `array` [<Array>][Array]
+
+把参数`array`内容按八位分配成一个新的缓冲区。
+
+例如：
+
+```js
+  // Creates a new Buffer containing ASCII bytes of the string 'buffer'
+  const buf = Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72]);
+```
+
+如果参数 `array` 不是 `Array` 就好报类型错误。
+
+### Class Method: Buffer.from(arrayBuffer[, byteOffset[, length]])
+>   v5.10.0+
+
+*   `arrayBuffer` [<ArrayBuffer>][ArrayBuffer] [ArrayBuffer][ArrayBuffer] 或 [TypedArray][TypedArray] `.buffer`属性返回值
+*   `byteOffset` <Integer> 从哪个位置开始复制`arrayBuffer`。 默认为：0
+*   `length` <Integer> 需要从`arrayBuffer`上面复制的长度。默认 `arrayBuffer.length -byteOffset`
+
+当引用 [TypedArray][TypedArray]实例的`.buffer`属性值时，新创建的缓冲区将与[TypedArray][TypedArray]共享相同部分的内存。
+
+例如：
+
+```js
+  const arr = new Uint16Array(2);
+
+  arr[0] = 5000;
+  arr[1] = 4000;
+
+  // Shares memory with `arr`
+  const buf = Buffer.from(arr.buffer);
+
+  // Prints: <Buffer 88 13 a0 0f>
+  console.log(buf);
+
+  // Changing the original Uint16Array changes the Buffer also
+  arr[1] = 6000;
+
+  // Prints: <Buffer 88 13 70 17>
+  console.log(buf);
+```
+
+可选`byteOffset`和`length` 参数指定内存范围内的 `arrayBuffer` 将共享`Buffer`缓冲区。
+
+例如：
+
+```js
+  const ab = new ArrayBuffer(10);
+  const buf = Buffer.from(ab, 0, 2);
+
+  // Prints: 2
+  console.log(buf.length);
+```
+
+`arrayBuffer`不是一个 [ArrayBuffer][ArrayBuffer] 类型的参数将会报出类型错误。
+
+### Class Method: Buffer.from(buffer)
+
+
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
@@ -457,3 +598,5 @@ Node.js最新支持的字符编码格式：
 [Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
+[String-prototype-length]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/length
+[DataView]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView
