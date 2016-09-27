@@ -15,7 +15,7 @@
         *   [new Buffer(string[,encoding])](#new-bufferstringencoding)
         *   [Class Method: Buffer.alloc(size[, fill[, encoding]])](#class-methodbufferallocsizefillencoding)
         *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
-
+        *   [Class Method: Buffer.allocUnsafeSlow(size)](#class-methodbufferallocunsafeslowsize)
 # Buffer
 > Stability: 稳定的
 
@@ -402,6 +402,21 @@ Node.js最新支持的字符编码格式：
 `size`如果不是数字会报类型错误。
 
 `Buffer`模块会根据`Buffer.poolSize`大小采用预分配创建`Buffer`实例。只有当在使用 [Buffer.allocUnsafe()](#class-methodbufferallocunsafesize) 并且`size`小于等于`Buffer.poolSize`的一半的时候，会采用快速分配创建缓冲区。
+
+和`Buffer.allocUnsafe(size).fill(0)`最关键的不同是`Buffer.alloc(size,fill)`使用预分配内存池。特别是，`Buffer.alloc(size,fill)`从不使用内部缓冲池，当`size`大小小于等于`Buffer.poolSize`的一半的时候`Buffer.allocUnsafe(size).fill(fill)`将使用内部缓冲区。当应用需要`Buffer.allocUnsafe()`提供而外的性能时，这些微小的差异就显得极为重要了。
+
+
+### Class Method: Buffer.allocUnsafeSlow(size)
+> v5.10.0+
+
+*   `size` <Integer> `Buffer`缓冲区的大小
+
+`size`参数必须小于等于 [buffer.kMaxLength](#buffer-kMaxLength)，反之，抛出范围错误。`size <= 0`将创建长度等于0的 `Buffer`。
+
+`Buffer`实例底下暂用的内存不会在创建的时候初始化。创建的`Buffer`是未知的并且可能包含敏感数据。使用 `buf.fill(0)` 去初始化`Buffer`为 0。
+
+当使用 [Buffer.allocUnsafeSlow()](#class-methodbufferallocunsafeslowsize) 创建`Buffer`缓冲区实例，当大小小于4kb时，默认按4kb分配缓冲区。它允许应用创建更多`Buffer`实例时避免更多垃圾回收开销。通过消除需要跟踪和清理持久对象可以提高性能和内存的使用。
+
 
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
