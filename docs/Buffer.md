@@ -263,8 +263,8 @@ Node.js最新支持的字符编码格式：
 >   用 `Buffer.from(arrayBuffer[,byteOffset[,length]]) 代替
 
 *   `arrayBuffer` [\<ArrayBuffer\>][ArrayBuffer]  [TypedArray][TypedArray] 的`.buffer`属性值或 [ArrayBuffer][ArrayBuffer]。
-*   `byteOfset` <Integer> 从那个位置开始复制 `arrayBuffer` 。 默认：开始位置：0。
-*   `length`<Integer> 需要从`arrayBuffer`复制多少字节的数据。默认：`arrayBuffer.length-byteOffset`。 
+*   `byteOfset` \<Integer\> 从那个位置开始复制 `arrayBuffer` 。 默认：开始位置：0。
+*   `length`\<Integer\> 需要从`arrayBuffer`复制多少字节的数据。默认：`arrayBuffer.length-byteOffset`。 
 
 当引用 [TypedArray][TypedArray]实例的`.buffer`属性值时，新创建的缓冲区将与[TypedArray][TypedArray]共享相同部分的内存。
 
@@ -296,7 +296,7 @@ Node.js最新支持的字符编码格式：
 
 >   用 `Buffer.alloc(size)` ( 通常用 `Buffer.allocUnsafe(size)`)
 
-*   `size` <Integer> 创建 `Buffer` 的长度。
+*   `size` \<Integer\> 创建 `Buffer` 的长度。
 
 创建分配内存大小为 `size` 大小字节的`Buffer`。`size`必须小于等于可以分配内存的最大限制`buffer.kMaxLength`。反之，则会抛出范围错误。`size <= 0`则会创建长度为0的`Buffer`。
 
@@ -348,8 +348,8 @@ Node.js最新支持的字符编码格式：
 ### Class Method:Buffer.alloc(size[,fill[,encoding]])
 >   v5.10.0+
 
-*   `size` <Integer> `Buffer`缓冲区的大小
-*   `fill` [\<String\>][String] | [\<Buffer\>](#classbuffer) | <Integer> 初始化缓冲区的值。默认为：0
+*   `size` \<Integer\> `Buffer`缓冲区的大小
+*   `fill` [\<String\>][String] | [\<Buffer\>](#classbuffer) | \<Integer\> 初始化缓冲区的值。默认为：0
 *   `encoding` [\<String\>][String] 编码格式。默认： `'utf-8'`
 
 创建一个大小为 `size`字节 的缓冲区。如果参数`fill`是`undefined` , `Buffer`缓冲区将使用 `0` 填充。
@@ -423,7 +423,7 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.allocUnsafeSlow(size)
 > v5.10.0+
 
-*   `size` <Integer> `Buffer`缓冲区的大小
+*   `size` \<Integer\> `Buffer`缓冲区的大小
 
 `size`参数必须小于等于 [buffer.kMaxLength](#buffer-kMaxLength)，反之，抛出范围错误。`size <= 0`将创建长度等于0的 `Buffer`。
 
@@ -459,9 +459,9 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.byteLength(string[, encoding])
 > v0.1.90+
 
-*   `string` [\<String\>][String] | [\<Buffer\>](#buffer) | <TypedArray> | [\<DataView\>][DataView] | [\<ArrayBuffer\>][ArrayBuffer] 用来计算长度的值
+*   `string` [\<String\>][String] | [\<Buffer\>](#buffer) | \<TypedArray\> | [\<DataView\>][DataView] | [\<ArrayBuffer\>][ArrayBuffer] 用来计算长度的值
 *   `encoding` [\<String\>][String] 如果是字符串，那么就是编码格式。默认为： `'utf-8'`
-*   返回：<Integer> 返回字符串内容的字节长度
+*   返回：\<Integer\> 返回字符串内容的字节长度
 
 返回字符串实际字节长度。它不同于类似 [String.prototype.length][String-prototype-length] 返回字符长度。
 
@@ -484,9 +484,9 @@ Node.js最新支持的字符编码格式：
 
 *   `buf1` [\<Buffer\>](#buffer)
 *   `buf2` [\<Buffer\>](#buffer)
-*   返回： <Integer>
+*   返回： \<Integer\>
 
-通常目的是比较 `buf1`和`buf2` 的缓冲区数组。等同于 [buf1.compare(buf2)]()。
+通常目的是比较 `buf1`和`buf2` 的缓冲区数组。等同于 [buf1.compare(buf2)](#bufcomparetarget-targetstart-targetend-sourcestart-sourceend)。
 
 例如：
 
@@ -504,7 +504,7 @@ Node.js最新支持的字符编码格式：
 > v0.7.11+
 
 *   `list` [\<Array\>][Array] 需要合并的`Buffer`列表
-*   `totalLength` <Integer> 合并之后的`Buffer`实例总长度
+*   `totalLength` \<Integer\> 合并之后的`Buffer`实例总长度
 *   返回： [\<Buffer\>](#buffer)
 
 在`Buffer`实例与列表合并之后，返回一个新的`Buffer`实例。
@@ -553,8 +553,8 @@ Node.js最新支持的字符编码格式：
 >   v5.10.0+
 
 *   `arrayBuffer` [\<ArrayBuffer\>][ArrayBuffer] [ArrayBuffer][ArrayBuffer] 或 [TypedArray][TypedArray] `.buffer`属性返回值
-*   `byteOffset` <Integer> 从哪个位置开始复制`arrayBuffer`。 默认为：0
-*   `length` <Integer> 需要从`arrayBuffer`上面复制的长度。默认 `arrayBuffer.length -byteOffset`
+*   `byteOffset` \<Integer\> 从哪个位置开始复制`arrayBuffer`。 默认为：0
+*   `length` \<Integer\> 需要从`arrayBuffer`上面复制的长度。默认 `arrayBuffer.length -byteOffset`
 
 当引用 [TypedArray][TypedArray]实例的`.buffer`属性值时，新创建的缓冲区将与[TypedArray][TypedArray]共享相同部分的内存。
 
@@ -664,7 +664,7 @@ Node.js最新支持的字符编码格式：
 ### Class Property: Buffer.poolSize
 > v0.11.3
 
-*   <Integer> 默认：8192
+*   \<Integer\> 默认：8192
 
 这是用来确定的字节数预先分配的大小,用于内部`Buffer`缓冲区实例。这个值可以被修改。 
 
@@ -690,6 +690,109 @@ Node.js最新支持的字符编码格式：
 ### buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])
 >   v0.11.13
 
+*   `target` [\<Buffer\>](#buffer) 需要比较的 `Buffer`
+*   `targetStart` \<Integer\> 从`target`的第几个下标卡死进行比较。默认：0
+*   `targetEnd` \<Integer\> 比较到`target`的哪个位置结束（不包含结束位置下标）。`targetStart`为`undefined`时`targetEnd`会被忽略。默认为：`target.length`
+*   `sourceStart` \<Integer\> 从`buf`的第几个下标开始比较。`targetStart`为`undefined`时`targetEnd`会被忽略。 默认为：0
+*   `sourceEnd` \<Integer\> 比较到`buf`的哪个位置结束（不包含结束位置下标）。`targetStart`为`undefined`时`sourceEnd`会被忽略。默认为：`buf.length`
+
+比较`buf`与`target`,并返回一个数字指示是否缓冲区之前,之后,或在排序顺序是一样的目标。比较是基于实际每个缓冲区的字节序列。
+
+*   `0` `target` === `buf`
+*   `1` 进行排序`target`先于 `buf`
+*   `-1` 进行排序 `target` 后于 `buf`
+
+```js
+  const buf1 = Buffer.from('ABC');
+  const buf2 = Buffer.from('BCD');
+  const buf3 = Buffer.from('ABCD');
+
+  // Prints: 0
+  console.log(buf1.compare(buf1));
+
+  // Prints: -1
+  console.log(buf1.compare(buf2));
+
+  // Prints: -1
+  console.log(buf1.compare(buf3));
+
+  // Prints: 1
+  console.log(buf2.compare(buf1));
+
+  // Prints: 1
+  console.log(buf2.compare(buf3));
+
+  // Prints: [ <Buffer 41 42 43>, <Buffer 41 42 43 44>, <Buffer 42 43 44> ]
+  // (This result is equal to: [buf1, buf3, buf2])
+  console.log([buf1, buf2, buf3].sort(Buffer.compare));
+```
+
+可选`targetStart`,`targetEnd`, `sourceStart`,`sourceEnd`参数分别可以用来限制比较特定范围内的`target`和`buf`缓冲区。
+
+例如:
+
+```js
+  const buf1 = Buffer.from([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+  const buf2 = Buffer.from([5, 6, 7, 8, 9, 1, 2, 3, 4]);
+
+  // Prints: 0
+  console.log(buf1.compare(buf2, 5, 9, 0, 4));
+
+  // Prints: -1
+  console.log(buf1.compare(buf2, 0, 6, 4));
+
+  // Prints: 1
+  console.log(buf1.compare(buf2, 5, 6, 5));
+```
+
+如果传人参数： `targetStart < 0` , `sourceStart < 0` , `targetEnd > target.length` , `sourceEnd > buf.length` 将会抛出范围错误。
+
+### buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])
+>   v0.1.90
+
+*   `target` [\<Buffer\>](#buffer) `Buffer`缓冲区
+*   `targetStart` \<Integer\> 从`target`缓冲区的`targetStart`位置开始粘贴。默认：0
+*   `sourceStart` \<Integer\> 从`source`缓冲区的`sourceStart`位置开始复制。 `targetStart`没定义则忽略。默认：0
+*   `sourceEnd` \<Integer\> 复制到当前位置(不包括当前下标). `sourceStart`没定义则忽略。默认：`buf.length`
+*   返回：<Integer> 拷贝的字节长度。
+
+将`buf`的缓冲数据复制到`target`，即使`target`和`buf`重叠。
+
+例如：创建2个`Buffer`实例，`buf1` 和 `buf2` ， 复制`buf1`从第16字节开始到`19`字节到`buf2`，从`buf2`的第8个字节开始粘贴。
+
+```js
+  const buf1 = Buffer.allocUnsafe(26);
+  const buf2 = Buffer.allocUnsafe(26).fill('!');
+
+  for (let i = 0 ; i < 26 ; i++) {
+    // 97 is the decimal ASCII value for 'a'
+    buf1[i] = i + 97;
+  }
+
+  buf1.copy(buf2, 8, 16, 20);
+
+  // Prints: !!!!!!!!qrst!!!!!!!!!!!!!
+  console.log(buf2.toString('ascii', 0, 25));
+```
+
+例如：创建一个`Buffer`并从一个区域复制相同缓冲数据覆盖另外一个区域
+
+```js
+  const buf = Buffer.allocUnsafe(26);
+
+  for (var i = 0 ; i < 26 ; i++) {
+    // 97 is the decimal ASCII value for 'a'
+    buf[i] = i + 97;
+  }
+
+  buf.copy(buf, 0, 4, 10);
+
+  // Prints: efghijghijklmnopqrstuvwxyz
+  console.log(buf.toString());
+```
+
+### buf.entries()
+> v1.1.0
 
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
