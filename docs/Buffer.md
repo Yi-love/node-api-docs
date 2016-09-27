@@ -13,6 +13,8 @@
         *   [new Buffer(arrayBuffer[,byteOffset[,length]])](#new-bufferarraybufferbyteoffsetlength)
         *   [new Buffer(size)](#new-buffersize)
         *   [new Buffer(string[,encoding])](#new-bufferstringencoding)
+        *   [Class Method: Buffer.alloc(size[, fill[, encoding]])]()
+        *   [Class Method: Buffer.allocUnsafe(size)](#class-method)
 
 # Buffer
 > Stability: 稳定的
@@ -284,7 +286,7 @@ Node.js最新支持的字符编码格式：
 
 创建分配内存大小为 `size` 大小字节的`Buffer`。`size`必须小于等于可以分配内存的最大限制`buffer.kMaxLength`。反之，则会抛出范围错误。`size <= 0`则会创建长度为0的`Buffer`。
 
-不像 [ArrayBuffer][ArrayBuffer] , ·`Buffer`实例底下暂用的内存不会在创建的时候初始化。创建的`Buffer`是未知的并且可能包含敏感数据。使用 `buf.fill(0)` 去初始化`Buffer`为 0。
+不像 [ArrayBuffer][ArrayBuffer] , `Buffer`实例底下暂用的内存不会在创建的时候初始化。创建的`Buffer`是未知的并且可能包含敏感数据。使用 `buf.fill(0)` 去初始化`Buffer`为 0。
 
 例如：
 
@@ -305,6 +307,107 @@ Node.js最新支持的字符编码格式：
 
 >   用 `Buffer.from(string[,encoding])` 代替
 
+
+*   `string` [<String>][String] 需要编码的字符串
+*   `encoding` [<String>][String] 编码格式。默认：`'utf-8'`
+
+根据JavaScript字符串内容创建新的 `Buffer` 缓冲区。如果传人了编码格式参数那么将根据提供的编码格式编码字符串。
+
+例如：
+
+```js
+  const buf1 = new Buffer('this is a tést');
+
+  // Prints: this is a tést
+  console.log(buf1.toString());
+
+  // Prints: this is a tC)st
+  console.log(buf1.toString('ascii'));
+
+
+  const buf2 = new Buffer('7468697320697320612074c3a97374', 'hex');
+
+  // Prints: this is a tést
+  console.log(buf2.toString());
+```
+
+### Class Method:Buffer.alloc(size[,fill[,encoding]])
+>   v5.10.0+
+
+*   `size` <Integer> `Buffer`缓冲区的大小
+*   `fill` [<String>][String] | [<Buffer>](#classbuffer) | <Integer> 初始化缓冲区的值。默认为：0
+*   `encoding` [<String>][String] 编码格式。默认： `'utf-8'`
+
+创建一个大小为 `size`字节 的缓冲区。如果参数`fill`是`undefined` , `Buffer`缓冲区将使用 `0` 填充。
+
+例如：
+
+```js
+  const buf = Buffer.alloc(5);
+
+  // Prints: <Buffer 00 00 00 00 00>
+  console.log(buf);
+```
+
+`size`参数必须小于等于 [buffer.kMaxLength](#buffer-kMaxLength)，反之，抛出范围错误。`size <= 0`将创建长度等于0的 `Buffer`。
+
+如果提供了 `fill` 参数，创建缓冲区的时候将使用 `buf.fill(fill)`进行初始化。
+
+例如：
+
+```js
+  const buf = Buffer.alloc(5, 'a');
+
+  // Prints: <Buffer 61 61 61 61 61>
+  console.log(buf);
+```
+
+如果参数 `fill` 和 `encoding` 都提供，创建的`Buffer`缓冲区将使用 `buf.fill(fill,encoding)`初始化。
+
+例如：
+
+```js
+  const buf = Buffer.alloc(11, 'aGVsbG8gd29ybGQ=', 'base64');
+
+  // Prints: <Buffer 68 65 6c 6c 6f 20 77 6f 72 6c 64>
+  console.log(buf);
+```
+
+执行 `Buffer.alloc()`是比 `Buffer.allocUnsafe()` 低效率，但是可以确定`Buffer.alloc()`在创建`Buffer`缓冲区实例的内容是不存在敏感数据。
+
+`size`如果不是数字会报类型错误。
+
+### Class Method:Buffer.allocUnsafe(size)
+> v5.10.0+
+
+*   `size` `Buffer`缓冲区的大小
+
+`size`参数必须小于等于 [buffer.kMaxLength](#buffer-kMaxLength)，反之，抛出范围错误。`size <= 0`将创建长度等于0的 `Buffer`。
+
+`Buffer`实例底下暂用的内存不会在创建的时候初始化。创建的`Buffer`是未知的并且可能包含敏感数据。使用 `buf.fill(0)` 去初始化`Buffer`为 0。
+
+例如：
+```js
+  const buf = Buffer.allocUnsafe(5);
+
+  // Prints (contents may vary): <Buffer 78 e0 82 02 01>
+  console.log(buf);
+
+  buf.fill(0);
+
+  // Prints: <Buffer 00 00 00 00 00>
+  console.log(buf);
+```
+
+`size`如果不是数字会报类型错误。
+
+
+`Buffer`模块会根据`Buffer.poolSize`大小采用预分配创建`Buffer`实例。只有当在使用 [Buffer.allocUnsafe()](#buffer) 并且`size`小于等于`Buffer.poolSize`的一半的时候，会采用快速分配创建缓冲区。
+
+
+
+
+
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
@@ -314,3 +417,4 @@ Node.js最新支持的字符编码格式：
 [Buffer-slice]: https://nodejs.org/dist/latest-v6.x/docs/api/buffer.html#buffer_buf_slice_start_end
 [Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [ArrayBuffer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer
+[String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
