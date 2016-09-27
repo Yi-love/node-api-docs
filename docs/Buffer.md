@@ -648,16 +648,16 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.isBuffer(obj)
 >   v0.1.101+
 
-*   `obj` [<Object>][Object] .
-*   返回： [<Boolean>][Boolean]. 
+*   `obj`  [<Object>]
+*   返回： [<Boolean>] 
 
 如果 `obj` 是 `Buffer`类型返回 `true` ，反之，返回 `false`。
 
 ### Class Method: Buffer.isEncoding(encoding)
 >   v0.9.1
 
-*   `encoding` [<String>][String] 需要判断的字符编码
-*   返回：[<Boolean>][Boolean]
+*   `encoding` [<String>] 需要判断的字符编码
+*   返回：[<Boolean>]
 
 如果 传人`encoding`是该字符编码返回 `true` ， 反之 `false`。
 
