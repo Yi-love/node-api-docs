@@ -28,7 +28,7 @@
         *   [Class Property: Buffer.poolSize](#class-property-bufferpoolsize)
         *   [buf[index]](#bufindex)
         *   [buf.compare(target[, targetStart[, targetEnd[, sourceStart[, sourceEnd]]]])](#bufcomparetarget-targetstart-targetend-sourcestart-sourceend)
-        *   [buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])]()
+        *   [buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])](#bufcopytarget-targetstart-sourcestart-sourceend)
         *   [buf.entries()](#bufentries)
         *   [buf.equals(otherBuffer)](#bufequalsotherbuffer)
         *   [buf.fill(value[, offset[, end]][, encoding])](#buffillvalue-offset-end-encoding)
