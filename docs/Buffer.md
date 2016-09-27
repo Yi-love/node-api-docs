@@ -648,9 +648,8 @@ Node.js最新支持的字符编码格式：
 ### Class Method: Buffer.isBuffer(obj)
 >   v0.1.101+
 
-*   `obj` [<Object>][Object]
-*   返回： [<Boolean>][Boolean]
-
+*   `obj` [<Object>][Object] .
+*   返回： [<Boolean>][Boolean]. 
 
 如果 `obj` 是 `Buffer`类型返回 `true` ，反之，返回 `false`。
 
