@@ -794,6 +794,51 @@ Node.js最新支持的字符编码格式：
 ### buf.entries()
 > v1.1.0
 
+*   返回：\<Iterator\>
+
+根据缓冲区内容创建并返回一个迭代器。
+
+例如：打印日志缓冲区的全部内容
+
+```js
+  const buf = Buffer.from('buffer');
+
+  // Prints:
+  //   [0, 98]
+  //   [1, 117]
+  //   [2, 102]
+  //   [3, 102]
+  //   [4, 101]
+  //   [5, 114]
+  for (var pair of buf.entries()) {
+    console.log(pair);
+  }
+```
+
+### buf.equals(otherBuffer)
+>   v0.11.13+
+
+*   `otherBuffer` [\<Buffer\>][Buffer] 进行比较的`Buffer`
+*   返回： [\<Boolean\>][Boolean]
+
+`buf` 和 `OtherBuffer` 包含精确相等的字节，返回 `true` , 反之返回`false`。
+
+例如：
+
+```js
+  const buf1 = Buffer.from('ABC');
+  const buf2 = Buffer.from('414243', 'hex');
+  const buf3 = Buffer.from('ABCD');
+
+  // Prints: true
+  console.log(buf1.equals(buf2));
+
+  // Prints: false
+  console.log(buf1.equals(buf3));
+```
+
+### buf.fill(value[, offset[, end]][, encoding])
+>   v0.5.0
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
