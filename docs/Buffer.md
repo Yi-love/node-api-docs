@@ -16,7 +16,7 @@
         *   [Class Method: Buffer.alloc(size[, fill[, encoding]])](#class-methodbufferallocsizefillencoding)
         *   [Class Method: Buffer.allocUnsafe(size)](#class-methodbufferallocunsafesize)
         *   [Class Method: Buffer.allocUnsafeSlow(size)](#class-methodbufferallocunsafeslowsize)
-        *   [Class Method: Buffer.byteLength(string[, encoding])](#class-methodbufferbytelengthstringencoding)
+        *   [Class Method: Buffer.byteLength(string[, encoding])](#class-method-bufferbytelengthstring-encoding)
 
 # Buffer
 > Stability: 稳定的
