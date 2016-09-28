@@ -44,6 +44,14 @@
         *   [buf.readInt8(offset[, noAssert])]()
         *   [buf.readInt16BE(offset[, noAssert])]()
         *   [buf.readInt16LE(offset[, noAssert])]()
+        *   [buf.slice([start[, end]])]()
+        *   [buf.toString([encoding[, start[, end]]])]()
+        *   [buf.toJSON()]()
+        *   [buf.values()]()
+        *   [buf.write(string[, offset[, length]][, encoding])]()
+    *   [buffer.INSPECT_MAX_BYTES]()
+    *   [buffer.kMaxLength]()
+    *   [Class: SlowBuffer]()
 
 # Buffer
 > Stability: 稳定的
@@ -1085,7 +1093,7 @@ Node.js最新支持的字符编码格式：
 >   v0.11.15+
 
 *   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 8`
-*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   `noAssert` [\<Boolean\>][Boolean]  允许超出限制。默认：`false`
 *   返回： [\<Number][Number]
 
 根据特定的`offset`偏移量和字节顺序格式从缓冲区读取一个64位的`double`类型字节序。(`readDoubleBE()` 返回：大端字节序, `readDoubleLE()` 返回：小端字节序)。
@@ -1116,7 +1124,7 @@ Node.js最新支持的字符编码格式：
 >   v0.11.15+
 
 *   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 4`
-*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   `noAssert` [\<Boolean\>][Boolean]  允许超出限制。默认：`false`
 *   返回： [\<Number][Number]
 
 根据特定的`offset`偏移量和字节顺序格式从缓冲区读取一个32位的`float`类型字节序。(`readFloatBE()` 返回：大端字节序, `readFloatLE()` 返回：小端字节序)。
@@ -1146,7 +1154,7 @@ Node.js最新支持的字符编码格式：
 >   v0.5.0+
 
 *   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 1`
-*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   `noAssert` [\<Boolean\>][Boolean]  允许超出限制。默认：`false`
 *   返回： \<Integer\>
 
 根据指定`offset`的值读取一个有符号的8位的`integer`类型值。
@@ -1175,6 +1183,196 @@ Node.js最新支持的字符编码格式：
 >   v0.5.5+
 
 
+### buf.slice([start[, end]])
+>   v0.3.0
+
+*   `start` \<Integer\> 新`Buffer`从哪里开始。 默认：0
+*   `end`  \<Integer\> 新`Buffer`到哪个位置结束（不包含结束下标）。默认：`buf.length`
+*   返回： [\<Buffer\>][Buffer]
+
+返回一个与原始`Buffer`内存相同的新的`Buffer`引用。但删除了位置不在`start`到`end`直接的内容。
+
+例如：根据ASCII字母表创建一个`Buffer`,第二步使用`slice`方法，然后再修改原始`Buffer`的一个字节。
+
+```js
+  const buf1 = Buffer.allocUnsafe(26);
+
+  for (var i = 0 ; i < 26 ; i++) {
+    // 97 is the decimal ASCII value for 'a'
+    buf1[i] = i + 97;
+  }
+
+  const buf2 = buf1.slice(0, 3);
+
+  // Prints: abc
+  console.log(buf2.toString('ascii', 0, buf2.length));
+
+  buf1[0] = 33;
+
+  // Prints: !bc
+  console.log(buf2.toString('ascii', 0, buf2.length));
+```
+
+负数索引相对的是结束位置而不是开始位置。
+
+例如：
+
+```js
+  const buf = Buffer.from('buffer');
+
+  // Prints: buffe
+  // (Equivalent to buf.slice(0, 5))
+  console.log(buf.slice(-6, -1).toString());
+
+  // Prints: buff
+  // (Equivalent to buf.slice(0, 4))
+  console.log(buf.slice(-6, -2).toString());
+
+  // Prints: uff
+  // (Equivalent to buf.slice(1, 4))
+  console.log(buf.slice(-5, -2).toString());
+```
+
+### buf.toString([encoding[, start[, end]]])
+>   v0.1.90+
+
+*   `encoding` [\<String\>][String] 需要已哪种字符编码解码。默认：`'utf-8'`
+*   `start` \<Integer\> 从哪个位置开始解码。默认：0
+*   `end` \<Integer\> 到哪个位置停止解码（不包含此下标）。默认：[buf.length](#buflength)
+*   返回：[\<String\>][String]
+
+根据`encoding`参数提供的字符编码对`buf`解码为字符串。`start`到`end`部分是`buf`的子集。
+
+例如：
+
+```js
+  const buf1 = Buffer.allocUnsafe(26);
+
+  for (var i = 0 ; i < 26 ; i++) {
+    // 97 is the decimal ASCII value for 'a'
+    buf1[i] = i + 97;
+  }
+
+  // Prints: abcdefghijklmnopqrstuvwxyz
+  console.log(buf.toString('ascii'));
+
+  // Prints: abcde
+  console.log(buf.toString('ascii', 0, 5));
+
+
+  const buf2 = Buffer.from('tést');
+
+  // Prints: tés
+  console.log(buf.toString('utf8', 0, 3));
+
+  // Prints: tés
+  console.log(buf.toString(undefined, 0, 3));
+```
+
+
+### buf.toJSON()
+>   v0.9.2+
+
+*   返回： [\<Object\>][Object]
+
+返回一个JSON表示的`buf`缓冲区。当stringifying一个`Buffer`缓冲区实例时隐式地调用[JSON.stringify()][JSON-stringify]这个函数。
+
+例如：
+
+```js
+  const buf = Buffer.from([0x1, 0x2, 0x3, 0x4, 0x5]);
+  const json = JSON.stringify(buf);
+
+  // Prints: {"type":"Buffer","data":[1,2,3,4,5]}
+  console.log(json);
+
+  const copy = JSON.parse(json, (key, value) => {
+    return value && value.type === 'Buffer'
+      ? Buffer.from(value.data)
+      : value;
+  });
+
+  // Prints: <Buffer 01 02 03 04 05>
+  console.log(copy);
+```
+
+### buf.values()
+>   v1.1.0+
+
+*   返回： \<Iterator\>
+
+根据`buf`的值（字节）创建并返回一个迭代器。当在 `for..of`中使用`buf`，将自动调用`buf.values()`函数。
+
+例如：
+
+```js
+  const buf = Buffer.from('buffer');
+
+  // Prints:
+  //   98
+  //   117
+  //   102
+  //   102
+  //   101
+  //   114
+  for (var value of buf.values()) {
+    console.log(value);
+  }
+
+  // Prints:
+  //   98
+  //   117
+  //   102
+  //   102
+  //   101
+  //   114
+  for (var value of buf) {
+    console.log(value);
+  }
+```
+
+### buf.write(string[, offset[, length]][, encoding])
+>   v0.1.90+
+
+*   `string` [\<String\>][String] 需要写入`buf`的字符串
+*   `offset` \<Integer\> 从哪个位置开始写入`string`。默认：0
+*   `length` \<Integer\>  有多少字节需要写入。默认：`buf.length-offset`
+*   `encoding` [\<String\>][String] `string`的编码格式。默认：`'utf-8'`
+*   返回：\<Integer\> 写入的字节数
+
+在`offset`位置根据字符编码`encoding`参数往`buf`写入`string`。`length`是需要写入长度。如果缓冲区没有足够的空间来存入整个字符串,只有部分的字符串将会写。然而,部分编码字符不会被写入。
+
+例如：
+
+```js
+  const buf = Buffer.allocUnsafe(256);
+
+  const len = buf.write('\u00bd + \u00bc = \u00be', 0);
+
+  // Prints: 12 bytes: ½ + ¼ = ¾
+  console.log(`${len} bytes: ${buf.toString('utf8', 0, len)}`);
+```
+
+## buffer.INSPECT_MAX_BYTES
+>   v0.5.4+
+
+*   \<Integer\> 默认：50
+
+当调用 `buf.inspect()`函数时会返回一个最小字节数。这个值是可以被重写的。可以查看 [util.inspect()][util-inspect]了解更多的`buf.inspect`行为。
+
+注意这个属性只有在以这种`require('buffer')`方式引入`buffer`模块才有,全局`Buffer`或`Buffer`实例是不存在该属性。
+
+## buffer.kMaxLength
+>   v3.0.0
+
+*   \<Integer\>  `Buffer`实例的最大长度。
+
+32-bit系统,这个值：`(2^30)-1` (~1GB)。 64-bit系统,这个值：`(2^31)-1` (~2GB)。
+
+## Class: SlowBuffer
+>   v3.0.0+
+
+>   用 `Buffer.allocUnsafeSlow()`代替
 
 
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
@@ -1193,3 +1391,5 @@ Node.js最新支持的字符编码格式：
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [iterator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
 [Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
+[JSON-stringify]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify
+[util-inspect]: https://nodejs.org/dist/latest-v6.x/docs/api/util.html#util_util_inspect_object_options
