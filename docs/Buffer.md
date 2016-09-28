@@ -32,6 +32,18 @@
         *   [buf.entries()](#bufentries)
         *   [buf.equals(otherBuffer)](#bufequalsotherbuffer)
         *   [buf.fill(value[, offset[, end]][, encoding])](#buffillvalue-offset-end-encoding)
+        *   [buf.indexOf(value[, byteOffset][, encoding])]()
+        *   [buf.includes(value[, byteOffset][, encoding])]()
+        *   [buf.keys()]()
+        *   [buf.lastIndexOf(value[, byteOffset][, encoding])]()
+        *   [buf.length]()
+        *   [buf.readDoubleBE(offset[, noAssert])]()
+        *   [buf.readDoubleLE(offset[, noAssert])]()
+        *   [buf.readFloatBE(offset[, noAssert])]()
+        *   [buf.readFloatLE(offset[, noAssert])]()
+        *   [buf.readInt8(offset[, noAssert])]()
+        *   [buf.readInt16BE(offset[, noAssert])]()
+        *   [buf.readInt16LE(offset[, noAssert])]()
 
 # Buffer
 > Stability: 稳定的
@@ -757,7 +769,7 @@ Node.js最新支持的字符编码格式：
 *   `targetStart` \<Integer\> 从`target`缓冲区的`targetStart`位置开始粘贴。默认：0
 *   `sourceStart` \<Integer\> 从`source`缓冲区的`sourceStart`位置开始复制。 `targetStart`没定义则忽略。默认：0
 *   `sourceEnd` \<Integer\> 复制到当前位置(不包括当前下标). `sourceStart`没定义则忽略。默认：`buf.length`
-*   返回：<Integer> 拷贝的字节长度。
+*   返回：\<Integer\> 拷贝的字节长度。
 
 将`buf`的缓冲数据复制到`target`，即使`target`和`buf`重叠。
 
@@ -843,9 +855,9 @@ Node.js最新支持的字符编码格式：
 ### buf.fill(value[, offset[, end]][, encoding])
 >   v0.5.0
 
-*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | <Integer> 用于填充`buf`的值
-*   `offset` <Integer> 从 `buf`的哪个位置开始填充。默认：0
-*   `end` <Integer> 填充到`buf`的哪个位置结束（不包含当前下标）。默认：`buf.length`
+*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | \<Integer\> 用于填充`buf`的值
+*   `offset` \<Integer\> 从 `buf`的哪个位置开始填充。默认：0
+*   `end` \<Integer\> 填充到`buf`的哪个位置结束（不包含当前下标）。默认：`buf.length`
 *   `encoding` [\<String\>][String] 编码格式。默认：`utf-8`
 *   返回：`buf`引用
 
@@ -871,6 +883,300 @@ Node.js最新支持的字符编码格式：
   console.log(Buffer.allocUnsafe(3).fill('\u0222'));
 ```
 
+### buf.indexOf(value[, byteOffset][, encoding])
+>   v1.5.0
+
+*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | \<Integer\> 需要查找的值
+*   `byteOffset` \<Integer\> 从 `buf` 缓冲区的哪个位置开始查找。 默认：0
+*   `encoding` [\<String\>][String] 如果`value`参数传人的是字符串，那么这个参数就是字符串编码。默认：`'utf-8'`
+*   返回： \<Integer\> 返回`value`字符串在`buf`中第一次出现的位置，不存在则返回 `-1`。
+
+`value`值存在：
+
+*   字符串，`value` 根据字符编码进行编码。
+*   `Buffer`实例 ， `value`值将进行全部比较。比较部分`Buffer` 使用 `buf.slice()`。
+*   数字 , 将被解析为一个8位无符号整数的数值在0到255之间。
+
+例如：
+
+```js
+  const buf = Buffer.from('this is a buffer');
+
+  // Prints: 0
+  console.log(buf.indexOf('this')));
+
+  // Prints: 2
+  console.log(buf.indexOf('is'));
+
+  // Prints: 8
+  console.log(buf.indexOf(Buffer.from('a buffer')));
+
+  // Prints: 8
+  // (97 is the decimal ASCII value for 'a')
+  console.log(buf.indexOf(97));
+
+  // Prints: -1
+  console.log(buf.indexOf(Buffer.from('a buffer example')));
+
+  // Prints: 8
+  console.log(buf.indexOf(Buffer.from('a buffer example').slice(0, 8)));
+
+
+  const utf16Buffer = Buffer.from('\u039a\u0391\u03a3\u03a3\u0395', 'ucs2');
+
+  // Prints: 4
+  console.log(utf16Buffer.indexOf('\u03a3', 0, 'ucs2'));
+
+  // Prints: 6
+  console.log(utf16Buffer.indexOf('\u03a3', -4, 'ucs2'));
+```
+
+### buf.includes(value[, byteOffset][, encoding])
+> v5.3.0+
+
+*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | \<Integer\> 需要查找的值
+*   `byteOffset` \<Integer\> 从 `buf` 缓冲区的哪个位置开始查找。 默认：0
+*   `encoding` [\<String\>][String] 如果`value`参数传人的是字符串，那么这个参数就是字符串编码。默认：`'utf-8'`
+*   返回： [\<Boolean\>][Boolean] 找到返回：`true` , 否则：`false`
+
+等价于 [ buf.indexOf() !== -1]()
+
+例如：
+
+```
+  const buf = Buffer.from('this is a buffer');
+
+  // Prints: true
+  console.log(buf.includes('this'));
+
+  // Prints: true
+  console.log(buf.includes('is'));
+
+  // Prints: true
+  console.log(buf.includes(Buffer.from('a buffer')));
+
+  // Prints: true
+  // (97 is the decimal ASCII value for 'a')
+  console.log(buf.includes(97));
+
+  // Prints: false
+  console.log(buf.includes(Buffer.from('a buffer example')));
+
+  // Prints: true
+  console.log(buf.includes(Buffer.from('a buffer example').slice(0, 8)));
+
+  // Prints: false
+  console.log(buf.includes('this', 4));
+```
+
+### buf.keys()
+> v1.1.0+
+
+*   返回： \<Iterator\>
+
+通过 `buf`的关键字 创建并返回[iterator][iterator]。
+
+例如：
+
+```js
+  const buf = Buffer.from('buffer');
+
+  // Prints:
+  //   0
+  //   1
+  //   2
+  //   3
+  //   4
+  //   5
+  for (var key of buf.keys()) {
+    console.log(key);
+  }
+```
+
+### buf.lastIndexOf(value[, byteOffset][, encoding])
+> v6.0.0
+
+*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | \<Integer\> 需要查找的值
+*   `byteOffset` \<Integer\> 从 `buf` 缓冲区的哪个位置开始查找。 默认：0
+*   `encoding` [\<String\>][String] 如果`value`参数传人的是字符串，那么这个参数就是字符串编码。默认：`'utf-8'`
+*   返回： \<Integer\> 返回`value`字符串在`buf`中最后一次出现的位置，不存在则返回 `-1`。
+
+除了是从后面往前面搜索外，基本与 [buf.indexOf()]()相同。
+
+例如：
+
+```js
+  const buf = Buffer.from('this buffer is a buffer');
+
+  // Prints: 0
+  console.log(buf.lastIndexOf('this'));
+
+  // Prints: 17
+  console.log(buf.lastIndexOf('buffer'));
+
+  // Prints: 17
+  console.log(buf.lastIndexOf(Buffer.from('buffer')));
+
+  // Prints: 15
+  // (97 is the decimal ASCII value for 'a')
+  console.log(buf.lastIndexOf(97));
+
+  // Prints: -1
+  console.log(buf.lastIndexOf(Buffer.from('yolo')));
+
+  // Prints: 5
+  console.log(buf.lastIndexOf('buffer', 5));
+
+  // Prints: -1
+  console.log(buf.lastIndexOf('buffer', 4));
+
+
+  const utf16Buffer = Buffer.from('\u039a\u0391\u03a3\u03a3\u0395', 'ucs2');
+
+  // Prints: 6
+  console.log(utf16Buffer.lastIndexOf('\u03a3', null, 'ucs2'));
+
+  // Prints: 4
+  console.log(utf16Buffer.lastIndexOf('\u03a3', -5, 'ucs2'));
+```
+
+### buf.length
+>   v0.1.90+
+
+*   \<Integer\>
+
+返回`buf`分配的总的内存字节。注意：这不能反映`buf`数据的`'可用'`数量。
+
+例如：创建一个`Buffer`然后用短的ASCII字符串覆盖它
+
+```js
+  const buf = Buffer.alloc(1234);
+
+  // Prints: 1234
+  console.log(buf.length);
+
+  buf.write('some string', 0, 'ascii');
+
+  // Prints: 1234
+  console.log(buf.length);
+```
+
+`length`属性是可以改变的，改变长度的值会造成结果为`undefined`或者行为不一致。应用希望通过使用 [buf.slice()]() 创建一个新的
+缓冲区来解决`Buffer`缓冲区`length`属性为只读的问题。
+
+例如：
+
+```js
+  var buf = Buffer.allocUnsafe(10);
+
+  buf.write('abcdefghj', 0, 'ascii');
+
+  // Prints: 10
+  console.log(buf.length);
+
+  buf = buf.slice(0, 5);
+
+  // Prints: 5
+  console.log(buf.length);
+```
+
+### buf.readDoubleBE(offset[, noAssert])
+### buf.readDoubleLE(offset[, noAssert])
+>   v0.11.15+
+
+*   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 8`
+*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   返回： [\<Number][Number]
+
+根据特定的`offset`偏移量和字节顺序格式从缓冲区读取一个64位的`double`类型字节序。(`readDoubleBE()` 返回：大端字节序, `readDoubleLE()` 返回：小端字节序)。
+
+将`noAssert`设置为`true`允许将抵消超出缓冲区的末尾,但结果应该被认为是未定义的行为。
+
+例如：
+
+```js
+  const buf = Buffer.from([1, 2, 3, 4, 5, 6, 7, 8]);
+
+  // Prints: 8.20788039913184e-304
+  console.log(buf.readDoubleBE());
+
+  // Prints: 5.447603722011605e-270
+  console.log(buf.readDoubleLE());
+
+  // Throws an exception: RangeError: Index out of range
+  console.log(buf.readDoubleLE(1));
+
+  // Warning: reads passed end of buffer!
+  // This will result in a segmentation fault! Don't do this!
+  console.log(buf.readDoubleLE(1, true));
+```
+
+### buf.readFloatBE(offset[, noAssert])
+### buf.readFloatLE(offset[, noAssert])
+>   v0.11.15+
+
+*   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 4`
+*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   返回： [\<Number][Number]
+
+根据特定的`offset`偏移量和字节顺序格式从缓冲区读取一个32位的`float`类型字节序。(`readFloatBE()` 返回：大端字节序, `readFloatLE()` 返回：小端字节序)。
+
+将`noAssert`设置为`true`允许将抵消超出缓冲区的末尾,但结果应该被认为是未定义的行为。
+
+例如：
+
+```js
+  const buf = Buffer.from([1, 2, 3, 4]);
+
+  // Prints: 2.387939260590663e-38
+  console.log(buf.readFloatBE());
+
+  // Prints: 1.539989614439558e-36
+  console.log(buf.readFloatLE());
+
+  // Throws an exception: RangeError: Index out of range
+  console.log(buf.readFloatLE(1));
+
+  // Warning: reads passed end of buffer!
+  // This will result in a segmentation fault! Don't do this!
+  console.log(buf.readFloatLE(1, true));
+```
+
+### buf.readInt8(offset[, noAssert])
+>   v0.5.0+
+
+*   `offset` \<Integer\> 从哪个位置开始读。必须满足： `0 <= offset <= buf.length - 1`
+*   `noAssert` [\<\Bollean>][Boolean]  允许超出限制。默认：`false`
+*   返回： \<Integer\>
+
+根据指定`offset`的值读取一个有符号的8位的`integer`类型值。
+
+将`noAssert`设置为`true`允许将抵消超出缓冲区的末尾,但结果应该被认为是未定义的行为。
+
+`Buffer`里面读取一个`Integer`类型会被解析成2部分的值，其中一部分是符合值。
+
+例如：
+
+```js
+  const buf = Buffer.from([-1, 5]);
+
+  // Prints: -1
+  console.log(buf.readInt8(0));
+
+  // Prints: 5
+  console.log(buf.readInt8(1));
+
+  // Throws an exception: RangeError: Index out of range
+  console.log(buf.readInt8(2));
+```
+
+### buf.readInt16BE(offset[, noAssert])
+### buf.readInt16LE(offset[, noAssert])
+>   v0.5.5+
+
+
+
+
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
@@ -885,3 +1191,5 @@ Node.js最新支持的字符编码格式：
 [DataView]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView
 [Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
+[iterator]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+[Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
