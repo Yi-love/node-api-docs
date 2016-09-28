@@ -843,6 +843,34 @@ Node.js最新支持的字符编码格式：
 ### buf.fill(value[, offset[, end]][, encoding])
 >   v0.5.0
 
+*   `value` [\<String\>][String] | [\<Buffer\>](#buffer) | <Integer> 用于填充`buf`的值
+*   `offset` <Integer> 从 `buf`的哪个位置开始填充。默认：0
+*   `end` <Integer> 填充到`buf`的哪个位置结束（不包含当前下标）。默认：`buf.length`
+*   `encoding` [\<String\>][String] 编码格式。默认：`utf-8`
+*   返回：`buf`引用
+
+以给定的值填充`buf`。如果没有传人 `offset` 和 `end` 参数 ， `buf`将会被全部初始化。这是一个很小的简化,使`Buffer`缓冲区的创建和填充在一行.
+
+例如：使用 `ASCII`字符 `'h'` 填充`Buffer`
+
+```js
+  const b = Buffer.allocUnsafe(50).fill('h');
+
+  // Prints: hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+  console.log(b.toString());
+```
+
+如果`value`值不是 `String` 过 `Integer` 类型 将会被强制转成 `uint32`
+
+如果使用`fill()`操作写入的是多字节字符，只有第一个字节的字符会写入`buf`缓冲区。
+
+例如：使用2字节字符写入 `Buffer`
+
+```js
+  // Prints: <Buffer c8 a2 c8>
+  console.log(Buffer.allocUnsafe(3).fill('\u0222'));
+```
+
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
