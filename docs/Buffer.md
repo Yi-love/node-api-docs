@@ -32,26 +32,26 @@
         *   [buf.entries()](#bufentries)
         *   [buf.equals(otherBuffer)](#bufequalsotherbuffer)
         *   [buf.fill(value[, offset[, end]][, encoding])](#buffillvalue-offset-end-encoding)
-        *   [buf.indexOf(value[, byteOffset][, encoding])]()
-        *   [buf.includes(value[, byteOffset][, encoding])]()
-        *   [buf.keys()]()
-        *   [buf.lastIndexOf(value[, byteOffset][, encoding])]()
-        *   [buf.length]()
-        *   [buf.readDoubleBE(offset[, noAssert])]()
-        *   [buf.readDoubleLE(offset[, noAssert])]()
-        *   [buf.readFloatBE(offset[, noAssert])]()
-        *   [buf.readFloatLE(offset[, noAssert])]()
-        *   [buf.readInt8(offset[, noAssert])]()
-        *   [buf.readInt16BE(offset[, noAssert])]()
-        *   [buf.readInt16LE(offset[, noAssert])]()
-        *   [buf.slice([start[, end]])]()
-        *   [buf.toString([encoding[, start[, end]]])]()
-        *   [buf.toJSON()]()
-        *   [buf.values()]()
-        *   [buf.write(string[, offset[, length]][, encoding])]()
-    *   [buffer.INSPECT_MAX_BYTES]()
-    *   [buffer.kMaxLength]()
-    *   [Class: SlowBuffer]()
+        *   [buf.indexOf(value[, byteOffset][, encoding])](#bufindexofvalue-byteoffset-encoding)
+        *   [buf.includes(value[, byteOffset][, encoding])](#bufincludesvalue-byteoffset-encoding)
+        *   [buf.keys()](#bufkeys)
+        *   [buf.lastIndexOf(value[, byteOffset][, encoding])](#buflastindexofvalue-byteoffset-encoding)
+        *   [buf.length](#buflength)
+        *   [buf.readDoubleBE(offset[, noAssert])](#bufreaddoublebeoffset-noassert)
+        *   [buf.readDoubleLE(offset[, noAssert])](#bufreaddoubleleoffset-noassert)
+        *   [buf.readFloatBE(offset[, noAssert])](#bufreadfloatbeoffset-noassert)
+        *   [buf.readFloatLE(offset[, noAssert])](#bufreadfloatleoffset-noassert)
+        *   [buf.readInt8(offset[, noAssert])](#bufreadint8offset-noassert)
+        *   [buf.readInt16BE(offset[, noAssert])](#bufreadint16beoffset-noassert)
+        *   [buf.readInt16LE(offset[, noAssert])](#bufreadint16leoffset-noassert)
+        *   [buf.slice([start[, end]])](#bufslicestart-end)
+        *   [buf.toString([encoding[, start[, end]]])](#buftostringencoding-start-end)
+        *   [buf.toJSON()](#buftojson)
+        *   [buf.values()](#bufvalues)
+        *   [buf.write(string[, offset[, length]][, encoding])](#bufwritestring-offset-length-encoding)
+    *   [buffer.INSPECT_MAX_BYTES](#bufferinspect_max_bytes)
+    *   [buffer.kMaxLength](#bufferkmaxlength)
+    *   [Class: SlowBuffer](#class-slowbuffer)
 
 # Buffer
 > Stability: 稳定的
@@ -1069,7 +1069,7 @@ Node.js最新支持的字符编码格式：
   console.log(buf.length);
 ```
 
-`length`属性是可以改变的，改变长度的值会造成结果为`undefined`或者行为不一致。应用希望通过使用 [buf.slice()]() 创建一个新的
+`length`属性是可以改变的，改变长度的值会造成结果为`undefined`或者行为不一致。应用希望通过使用 [buf.slice()](#bufslicestart-end) 创建一个新的
 缓冲区来解决`Buffer`缓冲区`length`属性为只读的问题。
 
 例如：
