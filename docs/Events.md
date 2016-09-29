@@ -7,15 +7,15 @@
     *   [Error events](#error-events)
     *   [Class: EventEmitter](#class-eventemitter)
         *   [Event: 'newListener'](#event-newlistener)
-        *   [Event: 'removeListener'](#event-removeListener)
-        *   [EventEmitter.defaultMaxListeners]()
-        *   [emitter.addListener(eventName, listener)]()
-        *   [emitter.emit(eventName[, arg1][, arg2][, ...])]()
-        *   [emitter.eventNames()]()
-        *   [emitter.getMaxListeners()]()
-        *   [emitter.listenerCount(eventName)]()
-        *   [emitter.listeners(eventName)]()
-        *   [emitter.on(eventName, listener)]()
+        *   [Event: 'removeListener'](#event-removelistener)
+        *   [EventEmitter.defaultMaxListeners](#eventemitterdefaultmaxlisteners)
+        *   [emitter.addListener(eventName, listener)](#emitteraddlistenereventname-listener)
+        *   [emitter.emit(eventName[, arg1][, arg2][, ...])](#emitteremiteventname-arg1-arg2-)
+        *   [emitter.eventNames()](#emittereventnames)
+        *   [emitter.getMaxListeners()](#emittergetmaxlisteners)
+        *   [emitter.listenerCount(eventName)](#emitterlistenercounteventname)
+        *   [emitter.listeners(eventName)](#emitterlistenerseventname)
+        *   [emitter.on(eventName, listener)](#emitteroneventname-listener)
 
 # Events
 >   Stability：稳定
@@ -299,6 +299,8 @@
 
 *   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
 *   `listener` [\<Function\>][Function] 回调函数
+
+
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Symbol]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type
