@@ -7,6 +7,15 @@
     *   [Error events](#error-events)
     *   [Class: EventEmitter](#class-eventemitter)
         *   [Event: 'newListener'](#event-newlistener)
+        *   [Event: 'removeListener'](#event-removeListener)
+        *   [EventEmitter.defaultMaxListeners]()
+        *   [emitter.addListener(eventName, listener)]()
+        *   [emitter.emit(eventName[, arg1][, arg2][, ...])]()
+        *   [emitter.eventNames()]()
+        *   [emitter.getMaxListeners()]()
+        *   [emitter.listenerCount(eventName)]()
+        *   [emitter.listeners(eventName)]()
+        *   [emitter.on(eventName, listener)]()
 
 # Events
 >   Stability：稳定
@@ -159,8 +168,137 @@
 *   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 需要监听的事件名称
 *   `listener` [\<Function\>][Function] 函数句柄
 
-`EventEmitter`
+`EventEmitter`实例会触发自带的`newListener`事件在添加其它监听器到监听器列表之前。
 
+注册`newListener`事件监听器将传递事件名称和添加的事件监听器的引用。
+
+在添加监听器之前触发事件有着微妙但又严重的负面作用：在`newListener`回调函数中注册任何额外的相同名称的监听器都会比在进程中添加的监听器优先添加。
+
+```js
+  const myEmitter = new MyEmitter();
+  // Only do this once so we don't loop forever
+  myEmitter.once('newListener', (event, listener) => {
+    if (event === 'event') {
+      // Insert a new listener in front
+      myEmitter.on('event', () => {
+        console.log('B');
+      });
+    }
+  });
+  myEmitter.on('event', () => {
+    console.log('A');
+  });
+  myEmitter.emit('event');
+    // Prints:
+    //   B
+    //   A
+```
+
+### Event: 'removeListener'
+>   v0.9.3+
+
+*   `eventName`  [\<String\>][String] | [\<Symbol\>][Symbol] 需要移除的事件名称
+*   `listener` [\<Function\>][Function] 函数句柄
+
+`'removeListener'`事件会在 `listener`移除之后触发。
+
+### EventEmitter.listenerCount(emitter, eventName)
+>   Added in: v0.9.12  Deprecated: v4.0.0
+
+>   用 `emitter.klistenerCount()`代替
+
+这个方法返回`emitter`注册的监听器的数量。
+
+```js
+  const myEmitter = new MyEmitter();
+  myEmitter.on('event', () => {});
+  myEmitter.on('event', () => {});
+  console.log(EventEmitter.listenerCount(myEmitter, 'event'));
+    // Prints: 2
+```
+
+### EventEmitter.defaultMaxListeners
+>  v0.11.2
+
+默认情况下，任何一个事件最多只能注册 `10` 个监听器。这个限制是可以通过 `EventEmitter`实例的 `emitter.setMaxListeners(n)`方法进行修改。要改变所有的`EventEmitter`实例的默认值，可以使用`EventEmitter.defaultMaxListeners`属性进行设置。
+
+设置`EventEmitter.defaultMaxListeners`要注意。`.defaultMaxListeners`属性的改变会影响所有的`EventEmitter`实例，包括改变`defaultMaxListeners`属性之前创建的实例。然而，调用`emitter.setMaxListeners(n)`还是优先于`EventEmitter.defaultMaxListeners`。
+
+注意这里没有硬性规定。一旦`EventEmitter`添加了超过限制的监听器时将会输出标准的错误流警告信息“EventEmitter内存泄漏”。
+对于许多`EventEmitter`，`emitter.getMaxListeners()`和`emitter.setMaxListater`方法可以用来处理这些警告。
+
+```js
+  emitter.setMaxListeners(emitter.getMaxListeners() + 1);
+  emitter.once('event', () => {
+    // do stuff
+    emitter.setMaxListeners(Math.max(emitter.getMaxListeners() - 1, 0));
+  });
+```
+
+`--trace-warnings` 命令行参数可以用来显示跟踪堆栈的警告信息。
+
+通过`process.on(wraning)`检查发出的警告能查出 `emitter`，`type`和`count`属性--即事件`emeitter`实例的引用,名称和监听器的数量。
+
+### emitter.addListener(eventName, listener)
+>  v0.1.26+
+
+`emitter.on(eventName, listener)`的别名。
+
+### emitter.emit(eventName[, arg1][, arg2][, ...])
+>   v0.1.26
+
+根据它们注册的顺序，`eventName`注册的事件名称来同时触发监听器，并提供监听器所需要的参数。
+
+当前事件监听器存在返回`true`,反之`false`。
+
+### emitter.eventNames()
+> v6.0.0+
+
+返回 `emitter`注册的事件监听器监听事件的列表。这个值可以是`Array` ， `String` 或 `Symbol`。
+
+```js
+  const EventEmitter = require('events');
+  const myEE = new EventEmitter();
+  myEE.on('foo', () => {});
+  myEE.on('bar', () => {});
+
+  const sym = Symbol('symbol');
+  myEE.on(sym, () => {});
+
+  console.log(myEE.eventNames());
+    // Prints [ 'foo', 'bar', Symbol(symbol) ]
+```
+
+### emitter.getMaxListeners()
+>   v1.0.0
+
+返回`EventEmitter`当前能添加监听器的最大值。可以通过 `emitter.setMaxListeners(n)`或`EventEmitter.defaultMaxListeners`修改这个值。
+
+### emitter.listenerCount(eventName)
+>   v3.2.0
+
+*   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
+
+根据`eventName`返回这个事件的事件监听器的数量。
+
+### emitter.listeners(eventName)
+>   v0.1.26
+
+根据事件名称`eventName`返回事件监听器的拷贝的数组。
+
+```js
+  server.on('connection', (stream) => {
+    console.log('someone connected!');
+  });
+  console.log(util.inspect(server.listeners('connection')));
+    // Prints: [ [Function] ]
+```
+
+### emitter.on(eventName, listener)
+>   v0.1.101+
+
+*   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
+*   `listener` [\<Function\>][Function] 回调函数
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Symbol]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type
