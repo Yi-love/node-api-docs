@@ -1,12 +1,12 @@
 # 内容目录
 
 *   [Events](#events)
-    *   [Passing arguments and this to listeners]()
-    *   [Asynchronous vs. Synchronous]()
-    *   [Handling events only once]()
-    *   [Error events]()
-    *   [Class: EventEmitter]()
-        *   [Event: 'newListener']()
+    *   [Passing arguments and this to listeners](#passing-arguments-and-this-to-listeners)
+    *   [Asynchronous vs. Synchronous](#asynchronous-vs-synchronous)
+    *   [Handling events only once](#handling-events-only-once)
+    *   [Error events](#error-events)
+    *   [Class: EventEmitter](#class-eventemitter)
+        *   [Event: 'newListener'](#event-newlistener)
 
 # Events
 >   Stability：稳定
@@ -159,8 +159,9 @@
 *   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 需要监听的事件名称
 *   `listener` [\<Function\>][Function] 函数句柄
 
-
+`EventEmitter`
 
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Symbol]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type
+[Function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
