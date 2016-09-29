@@ -16,6 +16,12 @@
         *   [emitter.listenerCount(eventName)](#emitterlistenercounteventname)
         *   [emitter.listeners(eventName)](#emitterlistenerseventname)
         *   [emitter.on(eventName, listener)](#emitteroneventname-listener)
+        *   [emitter.once(eventName, listener)]()
+        *   [emitter.prependListener(eventName, listener)]()
+        *   [emitter.prependOnceListener(eventName, listener)]()
+        *   [emitter.removeAllListeners([eventName])]()
+        *   [emitter.removeListener(eventName, listener)]()
+        *   [emitter.setMaxListeners(n)]()
 
 # Events
 >   Stability：稳定
@@ -300,6 +306,84 @@
 *   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
 *   `listener` [\<Function\>][Function] 回调函数
 
+根据事件名称`eventName`往监听器数组里面添加监听器函数。不会检查当前事件是否已经添加监听器。给同一个事件名称`eventName`添加多个监听器，那么多个监听器函数都会被调用。
+
+```js
+  server.on('connection', (stream) => {
+    console.log('someone connected!');
+  });
+```
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
+
+默认情况下，事件监听器的执行顺序是根据添加顺序来着。 使用`emitter.prependListener()`方法可以添加附带监听器在事件监听数组函数执行之前执行。
+
+```js
+  const myEE = new EventEmitter();
+  myEE.on('foo', () => console.log('a'));
+  myEE.prependListener('foo', () => console.log('b'));
+  myEE.emit('foo');
+    // Prints:
+    //   b
+    //   a
+```
+
+### emitter.once(eventName, listener)
+>   v0.3.0+
+
+*   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
+*   `listener` [\<Function\>][Function] 回调函数
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
+
+默认情况下，事件监听器的执行顺序是根据添加顺序来着。 使用`emitter.prependOnceListener()`方法可以添加附带监听器在事件监听数组函数执行之前执行。
+
+```js
+  const myEE = new EventEmitter();
+  myEE.once('foo', () => console.log('a'));
+  myEE.prependOnceListener('foo', () => console.log('b'));
+  myEE.emit('foo');
+    // Prints:
+    //   b
+    //   a
+```
+
+### emitter.prependListener(eventName, listener)
+>   v6.0.0+
+
+*   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
+*   `listener` [\<Function\>][Function] 回调函数
+
+根据事件名称`eventName`添加一个监听函数在事件监听列表对应名称函数之前。不会检查当前事件是否已经添加监听器。给同一个事件名称`eventName`添加多个监听器，那么多个监听器函数都会被调用。
+
+```js
+  server.prependListener('connection', (stream) => {
+    console.log('someone connected!');
+  });
+```
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
+
+### emitter.prependOnceListener(eventName, listener)
+>   v6.0.0+
+
+*   `eventName` [\<String\>][String] | [\<Symbol\>][Symbol] 监听的事件名称
+*   `listener` [\<Function\>][Function] 回调函数
+
+根据事件名称`eventName`添加一个监听函数在事件监听列表对应名称函数之前只添加一次。下次`eventName`被触发，这个监听器会先移除，然后执行回调。
+
+```js
+  server.prependOnceListener('connection', (stream) => {
+    console.log('Ah, we have our first user!');
+  });
+```
+返回`EventEmitter`的引用，所以可以使用链式调用。
+
+### emitter.removeAllListeners([eventName])
+
+### emitter.removeListener(eventName, listener)
+
+### emitter.setMaxListeners(n)
 
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
