@@ -3,10 +3,10 @@
 *   [File System](#file-system)
     *   [Buffer API](#buffer-api)
     *   [Class:fs.FSWatcher](#classfsfswatcher)
-        *   [Event: 'change']()
-        *   [Event: 'error']()
-        *   [watcher.close()]()
-    *   [Class: fs.ReadStream]()
+        *   [Event: 'change'](#event-change)
+        *   [Event: 'error'](#event-error)
+        *   [watcher.close()](#watcherclose)
+    *   [Class: fs.ReadStream](#class-fsreadstream)
 
 # File System
 >   Stability: 稳定
