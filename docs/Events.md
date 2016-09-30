@@ -16,12 +16,12 @@
         *   [emitter.listenerCount(eventName)](#emitterlistenercounteventname)
         *   [emitter.listeners(eventName)](#emitterlistenerseventname)
         *   [emitter.on(eventName, listener)](#emitteroneventname-listener)
-        *   [emitter.once(eventName, listener)]()
-        *   [emitter.prependListener(eventName, listener)]()
-        *   [emitter.prependOnceListener(eventName, listener)]()
-        *   [emitter.removeAllListeners([eventName])]()
-        *   [emitter.removeListener(eventName, listener)]()
-        *   [emitter.setMaxListeners(n)]()
+        *   [emitter.once(eventName, listener)](#emitteronceeventname-listener)
+        *   [emitter.prependListener(eventName, listener)](#emitterprependlistenereventname-listener)
+        *   [emitter.prependOnceListener(eventName, listener)](#emitterprependoncelistenereventname-listener)
+        *   [emitter.removeAllListeners([eventName])](#emitterremovealllistenerseventname)
+        *   [emitter.removeListener(eventName, listener)](#emitterremovelistenereventname-listener)
+        *   [emitter.setMaxListeners(n)](#emittersetmaxlistenersn)
 
 # Events
 >   Stability：稳定
@@ -380,11 +380,75 @@
 返回`EventEmitter`的引用，所以可以使用链式调用。
 
 ### emitter.removeAllListeners([eventName])
+>   v0.1.26
+
+根据事件名称`eventName`，移除所有监听这个事件的所有监听器。
+
+在别的代码里面添加的监听器在这里通过这种不好的实践方式删除是不合理的，特别是`EventEmitter`实例由其它的组件或模块创建的时候（例如：`socket` 或 文件流）。
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
 
 ### emitter.removeListener(eventName, listener)
+>   v0.1.26+
+
+根据事件名称`eventName`删除事件监听列表里面指定的监听器`listener`。
+
+```js
+  var callback = (stream) => {
+    console.log('someone connected!');
+  };
+  server.on('connection', callback);
+  // ...
+  server.removeListener('connection', callback);
+```
+
+`removeListener`最多异常只会从实例的事件监听器数组移除一个监听器。如果存在一些实例的事件名称`eventName`添加了多次事件监听器，那必须通过多次调用`removeListener`移除事件监听器。
+
+注意，事件一旦被触发，所有监听这个事件的监听器都会根据添加顺序被触发执行。这就意味着在事件触发之后事件监听器执行完成之前触发执行`removeListener()`或`removeAllListener()`都必须等到当前回调或全部事件全部执行完成时才会按函数预期的那样继续执行。
+
+```js
+  const myEmitter = new MyEmitter();
+
+  var callbackA = () => {
+    console.log('A');
+    myEmitter.removeListener('event', callbackB);
+  };
+
+  var callbackB = () => {
+    console.log('B');
+  };
+
+  myEmitter.on('event', callbackA);
+
+  myEmitter.on('event', callbackB);
+
+  // callbackA removes listener callbackB but it will still be called.
+  // Internal listener array at time of emit [callbackA, callbackB]
+  myEmitter.emit('event');
+    // Prints:
+    //   A
+    //   B
+
+  // callbackB is now removed.
+  // Internal listener array [callbackA]
+  myEmitter.emit('event');
+    // Prints:
+    //   A
+```
+
+因为监听器是使用内联数组管理，调用删除函数会改变所有注册的事件监听器的下标。这不会对事件监听器调用顺序进行改变，但它会使`emitter.listeners()`方法返回的事件监听数组需要被从新创建。
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
 
 ### emitter.setMaxListeners(n)
+>   v0.3.5+
 
+默认情况下，如果一个事件被添加超过了10个监听器将会打印告警信息。这对内存泄漏的排查很有帮助。不是所有的事件都应该限制10个监听器。特定的`EventEmitter`实例可以使用`emitter.setMaxListeners(n)`来修改这个这个限制.这个值可以设置为`Infinity`(或 0)表示可以添加无穷多的监听器。
+
+返回`EventEmitter`的引用，所以可以使用链式调用。
+
+
+=====================================[完]======================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Symbol]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type
