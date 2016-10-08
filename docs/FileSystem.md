@@ -7,6 +7,11 @@
         *   [Event: 'error'](#event-error)
         *   [watcher.close()](#watcherclose)
     *   [Class: fs.ReadStream](#class-fsreadstream)
+        *   [Event: 'open']()
+        *   [Event: 'close']()
+        *   [readStream.bytesRead]()
+        *   [readStream.path]()
+    *   [Class: fs.Stats]()
 
 # File System
 >   Stability: 稳定
@@ -133,7 +138,62 @@
 ## Class: fs.ReadStream
 >  v0.1.93+
 
+`ReadStream` 一个可读的流。
 
+### Event:'open'
+>   v0.1.93+
+
+*   `fd`<Integer> `ReadStream`中使用的文件描述符。
+
+### Event:'close'
+>   v0.1.93+
+
+使用`fs.close()`方法触发`ReadStream`关闭底层文件描述符。
+
+### readStream.bytesRead
+>   6.4.0+
+
+读取的字节数。
+
+### readStream.path
+>   0.1.93+
+
+`fs.createReadStream()`传人的第一个参数。
+如果传人的是字符串类型的`path`，`readStream.oath`返回字符串。如果传人的是`Buffer`，那么`reaStream.path`将返回`Buffer`。
+
+## Class:fs.Stats
+>   v0.1.21+
+
+返回`fs.stat()`,`fs.lstat()`,`fs.fstat()`和同行对应的类型对象。
+
+*   `stats.isFile()`
+*   `stats.isDirecttory()`
+*   `stats.isBlockDevice()`
+*   `stats.isCharacterDevice()`
+*   `stats.isSymbolicLink()`（仅对`fs.lstat()`有效）
+*   `stats.isFIFO()`
+*   `stats.isSocket()`
+
+相对于一个常规文件 [util.inspect(stats)]返回一个非常相似的字符串。
+
+```js
+  {
+    dev: 2114,
+    ino: 48064969,
+    mode: 33188,
+    nlink: 1,
+    uid: 85,
+    gid: 100,
+    rdev: 0,
+    size: 527,
+    blksize: 4096,
+    blocks: 8,
+    atime: Mon, 10 Oct 2011 23:24:11 GMT,
+    mtime: Mon, 10 Oct 2011 23:24:11 GMT,
+    ctime: Mon, 10 Oct 2011 23:24:11 GMT,
+    birthtime: Mon, 10 Oct 2011 23:24:11 GMT
+  }
+```
 
 ==================================未完待续...====================================
 
