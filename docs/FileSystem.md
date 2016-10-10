@@ -343,11 +343,32 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 
 通常，鉴权仅发生在一个文件不会被马上使用的情况。例如，可访问性是一个信号从另一个进程传过来的。
 
+## fs.accessSync(path[,mode])
+>   v0.11.15+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `mode` <  Integer>
+
+`fs.access()`的同步版本。鉴权失败抛出错误，反之什么都不做。
+
+## fs.appendFile(file, data[, options], callback)
+>   v0.6.7+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer] | [\<Number\>][Number]  文件名或者文件描述符
+*   `data` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `encoding` [\<String\>][String] | [\<Null\>][Null] 默认= `'utf-8'`
+    *   `mode` <Integer> 默认= `0o666`
+    *   `flag` [\<String\>][String] 默认= `'a'`
+*   `callback` [\<Function\>][Function]
 
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Buffer]: ./Buffer.md#buffer
+[Null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
+[Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
+[Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
 [Function]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function
 [Error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
 [util-inspect]: https://nodejs.org/dist/latest-v6.x/docs/api/util.html#util_util_inspect_object_options
