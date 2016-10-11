@@ -30,6 +30,31 @@
     *   [fs.closeSync(fd)]()
     *   [fs.constants]()
     *   [fs.createReadStream(path[, options])]()
+    *   [fs.createWriteStream(path[, options])]()
+    *   [fs.exists(path, callback)]()
+    *   [fs.existsSync(path)]()
+    *   [fs.fchmod(fd, mode, callback)]()
+    *   [fs.fchmodSync(fd, mode)]()
+    *   [fs.fchown(fd, uid, gid, callback)]()
+    *   [fs.fchownSync(fd, uid, gid)]()
+    *   [fs.fdatasync(fd, callback)]()
+    *   [fs.fdatasyncSync(fd)]()
+    *   [fs.fstat(fd, callback)]()
+    *   [fs.fstatSync(fd)]()
+    *   [fs.fsync(fd, callback)]()
+    *   [fs.fsyncSync(fd)]()
+    *   [fs.ftruncate(fd, len, callback)]()
+    *   [fs.ftruncateSync(fd, len)]()
+    *   [fs.futimes(fd, atime, mtime, callback)]()
+    *   [fs.futimesSync(fd, atime, mtime)]()
+    *   [fs.lchmod(path, mode, callback)]()
+    *   [fs.lchmodSync(path, mode)]()
+    *   [fs.lchown(path, uid, gid, callback)]()
+    *   [fs.lchownSync(path, uid, gid)]()
+    *   [fs.link(srcpath, dstpath, callback)]()
+    *   [fs.linkSync(srcpath, dstpath)]()
+    *   [fs.lstat(path, callback)]()
+    *   [fs.lstatSync(path)]()
 
 # File System
 >   Stability: 稳定
@@ -161,7 +186,7 @@
 ### Event:'open'
 >   v0.1.93+
 
-*   `fd`<Integer> `ReadStream`中使用的文件描述符。
+*   `fd`\<Integer\> `ReadStream`中使用的文件描述符。
 
 ### Event:'close'
 >   v0.1.93+
@@ -236,7 +261,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 ### Event:'open'
 >   v0.1.93+
 
-*   `fd` <Integer> 可写流用于文件写入的整型文件描述符。
+*   `fd` \<Integer\> 可写流用于文件写入的整型文件描述符。
 
 当可写流文件打开的时候触发。
 
@@ -260,7 +285,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 > v0.11.15+
 
 *   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
-*   `mode` <Integer>
+*   `mode` \<Integer\>
 *   `callback` [\<Function\>][Function]
 
 根据`path`检查用户有没有读取该文件或目录的权限。`mode`参数是一个可选的整型,指定要执行的可访问性检查。下面定义的常量都可能是`mode`的值。可以用一些这些值可以创建2个或2个以上的值。
@@ -370,7 +395,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `data` [\<String\>][String] | [\<Buffer\>][Buffer]
 *   `options` [\<Object\>][Object] | [\<String\>][String]
     *   `encoding` [\<String\>][String] | [\<Null\>][Null] 默认= `'utf-8'`
-    *   `mode` <Integer> 默认= `0o666`
+    *   `mode` \<Integer\> 默认= `0o666`
     *   `flag` [\<String\>][String] 默认= `'a'`
 *   `callback` [\<Function\>][Function]
 
@@ -402,7 +427,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `file`  [\<String\>][String] | [\<Buffer\>][Buffer] | [\<Number\>][Number]  文件名或者文件描述符
 *   `options` [\<Object\>][Object] | [\<String\>][String]
     *   `encoding` [\<String\>][String] | [\<Null\>][Null] 默认= `'utf-8'`
-    *   `mode` <Integer> 默认= `0o666`
+    *   `mode` \<Integer\> 默认= `0o666`
     *   `flag` [\<String\>][String] 默认= `'a'`
 
 `fs.appendFile()`函数的同步版本。返回`undefined`。
@@ -411,7 +436,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 >   v0.1.30+
 
 *   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
-*   `mode`  <Integer>
+*   `mode`  \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
 异步的[chmod(2)][chmod(2)],执行失败callback的参数error会抛出，否则error为空。
@@ -420,7 +445,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 >   v0.6.7+
 
 *   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
-*   `mode`  <Integer>
+*   `mode`  \<Integer\>
 
 同步的[chmod(2)][chmod(2)],返回`undefined`。
 
@@ -428,8 +453,8 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 >   v0.1.97+
 
 *   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
-*   `uid`  <Integer>
-*   `gid`  <Integer>
+*   `uid`  \<Integer\>
+*   `gid`  \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
 异步的[chown(2)][chown(2)],执行失败callback的参数error会抛出，否则error为空。
@@ -438,15 +463,15 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 >   v0.1.97+
 
 *   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
-*   `uid`  <Integer>
-*   `gid`  <Integer>
+*   `uid`  \<Integer\>
+*   `gid`  \<Integer\>
 
 同步的[chown(2)][chown(2)],返回`undefined`。
 
 ## fs.close(fd,callback)
 >   v0.0.2+
 
-*   `fd` <Integer>
+*   `fd` \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
 异步的[close(2)][close(2)]。执行失败callback的参数error会抛出，否则error为空。
@@ -454,7 +479,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 ## fs.closeSync(fd)
 >   v0.0.21+
 
-*   `fd` <Integer>
+*   `fd` \<Integer\>
 
 同步的[close(2)][close(2)],返回`undefined`。
 
@@ -469,11 +494,11 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `options` [\<Object\>][Object] | [\<String\>][String]
     *   `flags` [\<String\>][String]
     *   `encoding` [\<String\>][String]
-    *   `fd` <Integer>
-    *   `mode` <Integer>
+    *   `fd` \<Integer\>
+    *   `mode` \<Integer\>
     *   `autoClose` [\<Boolean\>][Boolean]
-    *   `start` <Integer>
-    *   `end`   <Integer>
+    *   `start` \<Integer\>
+    *   `end`   \<Integer\>
 
 返回新的[ReadStream](#classfsreadstream)对象。（[Readable Stream][Readable-Stream]）。
 
@@ -509,6 +534,262 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 
 `options`为字符串类型，那么将默认视为编码格式。
 
+
+## fs.createWriteStream(path[,options])
+>   v0.1.31+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `flags` [\<String\>][String]
+    *   `defaultEncoding` [\<String\>][String]
+    *   `fd` \<Integer\>
+    *   `mode` \<Integer\>
+    *   `autoClose` [\<Boolean\>][Boolean]
+    *   `start` \<Integer\>
+
+
+返回新的[WriteStream](#classfswritestream)对象。（[Writable Stream][Writable-Stream]）。
+
+`options`可以是对象或字符串，默认值如下：
+
+```js
+  {
+    flags: 'w',
+    defaultEncoding: 'utf8',
+    fd: null,
+    mode: 0o666,
+    autoClose: true
+  }
+```
+
+`options`参数包含一个`start`参数表示允许在文件的位置开始写入数据。宁可使用`flags`模式为`r+`修改文件也不用模式`w`。
+`defaultEncoding`: 任何一个可接受`Buffer`缓冲区的字符编码。
+
+如果`autoClose`设置为`false`,那么文件描述符`fd`将不会被自动关闭，即使产生错误。你必须确保文件描述符已经关闭没有遗漏。
+如果`autoClose`设置为`true`(默认为：`true`)，当产生错误或读取文件完毕都会自动关闭文件描述符。
+
+类似于`ReadStream` ，如果给定`fd`，将忽略`path`参数而是使用指定的文件描述符。这意味着`open`事件将不会被触发。注意`fd`应该是阻塞的；非阻塞的`fd`需要通过调用[net.Socket][net-Socket]。
+
+`options`为字符串类型，那么将默认视为编码格式。
+
+## fs.exists(path, callback)
+>  已弃用
+
+>  v0.0.2 - v1.0.0
+
+>  用 `fs.stat()`或`fs.access()`代替。
+
+## fs.existsSync(path)
+>  已弃用
+
+>  v0.1.21 - v1.0.0
+
+>  用 `fs.statSync()`或`fs.accessSync()`代替。
+
+## fs.fchmod(fd,mode,callback)
+>   v0.4.7+
+
+*   `fd` \<Integer\>
+*   `mode` \<Integer\>
+*   `callback` [\<Function\>][Function]
+
+异步的[fchmod(2)][fchmod(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.fchmodSync(fd,mode)
+>   v0.4.7+
+
+*   `fd` \<Integer\>
+*   `mode` \<Integer\>
+
+同步的[fchmod(2)][fchmod(2)] 。返回`undefined`。
+
+
+## fs.fchown(fd,uid,gid,callback)
+>   v0.4.7+
+
+*   `fd`  \<Integer\>
+*   `uid`  \<Integer\>
+*   `gid`  \<Integer\>
+*   `callback`  [\<Function\>][Function]
+
+异步的[fchown(2)][fchown(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.fchownSync(fd,uid,gid)
+>   v0.4.7+
+
+*   `fd`  \<Integer\>
+*   `uid`  \<Integer\>
+*   `gid`  \<Integer\>
+
+同步的[fchown(2)][fchown(2)] 。返回`undefined`。
+
+## fs.fdatasync(fd , callback)
+>   v0.1.96+
+
+*   `fd` \<Integer\>
+*   `callback` [\<Function\>][Function]
+
+异步的[fdatasync(2)][fdatasync(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.fdatasyncSync(fd)
+>   v0.1.96+
+
+*   `fd` \<Integer\>
+
+同步的[fdatasync(2)][fdatasync(2)] 。返回`undefined`。
+
+## fs.fstat(fd , callback)
+>   v0.1.95+
+
+*   `fd` \<Integer\>
+*   `callback`  [\<Function\>][Function]
+
+异步的[fstat(2)][fstat(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.fstatSync(fd)
+>   v0.1.95+
+
+*   `fd` \<Integer\>
+
+同步的[fstat(2)][fstat(2)] 。 返回`undefined`。
+
+## fs.fsync(fd,callback)
+>   v0.1.96+
+
+*   `fd` \<Integer\>
+*   `callback`  [\<Function\>][Function]
+
+异步的[fsync(2)][fsync(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.fsyncSync(fd)
+>   v0.1.96+
+
+*   `fd` \<Integer\>
+
+同步的[fsync(2)][fsync(2)] 。 返回`undefined`。
+
+
+## fs.ftruncate(fd, len, callback)
+>   v0.8.6+
+
+*   `fd` \<Integer\>
+*   `len` \<Integer\> 默认：0
+*   `callback` [\<Function\>][Function]
+
+异步的[ftruncate(2)][ftruncate(2)] 。执行失败callback的参数error会抛出，否则error为空。
+
+如果引用的文件描述符的文件的大小大于`len`。那么仅只有最开始长度为`len`的字节会被保留。
+
+例如，下面的程序只保留第一个文件的四个字节
+
+```js
+  console.log(fs.readFileSync('temp.txt', 'utf8'));
+    // prints Node.js
+
+  // get the file descriptor of the file to be truncated
+  const fd = fs.openSync('temp.txt', 'r+');
+
+  // truncate the file to first four bytes
+  fs.ftruncate(fd, 4, (err) => {
+    assert.ifError(err);
+    console.log(fs.readFileSync('temp.txt', 'utf8'));
+  });
+    // prints Node
+```
+
+如果文件的内容小于`len`字节。那么多余空出的部分将使用`\\0`填充。例如，
+
+```js
+  console.log(fs.readFileSync('temp.txt', 'utf-8'));
+    // prints Node.js
+
+  // get the file descriptor of the file to be truncated
+  const fd = fs.openSync('temp.txt', 'r+');
+
+  // truncate the file to 10 bytes, whereas the actual size is 7 bytes
+  fs.ftruncate(fd, 10, (err) => {
+    assert.ifError(!err);
+    console.log(fs.readFileSync('temp.txt'));
+  });
+    // prints <Buffer 4e 6f 64 65 2e 6a 73 00 00 00>
+    // ('Node.js\0\0\0' in UTF8)
+```
+
+最后3个字节将使用`\\0`填充，用来填补截断部分。
+
+## fs.ftruncateSync(fd, len)
+>   v0.8.6+
+
+*   `fd` \<Integer\>
+*   `len`  \<Integer\> 默认：0
+
+同步的[ftruncate(2)][ftruncate(2)] 。返回`undefined`。
+
+## fs.futimes(fd, atime, mtime, callback)
+>   v0.4.2+
+
+*   `fd`  \<Integer\>
+*   `atime`  \<Integer\>
+*   `mtime`   \<Integer\>
+*   `callback`  [\<Function\>][Function]
+
+根据给定的文件描述符引用修改文件的时间戳。
+
+## fs.futimesSync(fd,atime,mtime)
+>   v0.4.2+
+
+*   `fd`  \<Integer\>
+*   `atime`  \<Integer\>
+*   `mtime`   \<Integer\>
+
+`fs.futimes()`的同步版本。返回`undefined`。
+
+## fs.lchmod(path,mode,callback)
+>  弃用 v0.4.7+
+
+## fs.lchmodSync(path,mode)
+>  弃用 v0.4.7+
+
+## fs.lchown(path,mode,callback)
+>  弃用 v0.4.7+
+
+## fs.lchownSync(path,mode)
+>  弃用 v0.4.7+
+
+## fs.link(srcpath , dstpath , callpack)
+>   v0.1.31+
+
+*   `srcpath`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `dstpath`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[link(2)][link(2)]。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.linkSync(srcpath , dstpath)
+>   v0.1.30+
+
+*   `srcpath`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `dstpath`  [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[link(2)][link(2)]。返回：`undfined`。
+
+## fs.lstat(path,callback)
+>   0.1.30+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[lstat(2)][lstat(2)]。回调函数传入2个参数`(err,stats)`。`stats`表示`fs.Stats`对象。`lstat()`等同于`stat()`，如果`path`是个符号链接，那么这个状态就是当前这个符号链接的状态，而不是链接指向的文件的状态。
+
+## fs.lstatSync(path)
+>   0.1.30+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[lstat(2)][lstat(2)]。返回：`fs.Stats`实例。
+
+
+
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
@@ -528,4 +809,13 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 [chown(2)]: http://man7.org/linux/man-pages/man2/chown.2.html
 [close(2)]: http://man7.org/linux/man-pages/man2/close.2.html
 [Readable-Stream]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_readable
+[Writeable-Stream]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_writable
 [net-Socket]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
+[fchmod(2)]: http://man7.org/linux/man-pages/man2/fchmod.2.html
+[fchown(2)]: http://man7.org/linux/man-pages/man2/fchown.2.html
+[fdatasync(2)]: http://man7.org/linux/man-pages/man2/fdatasync.2.html
+[fstat(2)]: http://man7.org/linux/man-pages/man2/fstat.2.html
+[fsync(2)]: http://man7.org/linux/man-pages/man2/fsync.2.html
+[ftruncate(2)]: http://man7.org/linux/man-pages/man2/ftruncate.2.html
+[link(2)]: http://man7.org/linux/man-pages/man2/link.2.html
+[lstat(2)]: http://man7.org/linux/man-pages/man2/lstat.2.html
