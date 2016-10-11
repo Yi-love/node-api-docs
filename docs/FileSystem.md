@@ -501,6 +501,14 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 
 `mode`用于设置文件的模式，仅已经创建的文件有效。
 
+下面的例子是读取长度为100字节的文件的最后10个字节：
+
+```js
+  fs.createReadStream('sample.txt', {start: 90, end: 99});
+```
+
+`options`为字符串类型，那么将默认视为编码格式。
+
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
