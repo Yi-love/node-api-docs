@@ -18,6 +18,18 @@
         *   [Event: 'close']()
         *   [writeStream.bytesWritten]()
         *   [writeStream.path]()
+    *   [fs.access(path[, mode], callback)]()
+    *   [fs.accessSync(path[, mode])]()
+    *   [fs.appendFile(file, data[, options], callback)]()
+    *   [fs.appendFileSync(file, data[, options])]()
+    *   [fs.chmod(path, mode, callback)]()
+    *   [fs.chmodSync(path, mode)]()
+    *   [fs.chown(path, uid, gid, callback)]()
+    *   [fs.chownSync(path, uid, gid)]()
+    *   [fs.close(fd, callback)]()
+    *   [fs.closeSync(fd)]()
+    *   [fs.constants]()
+    *   [fs.createReadStream(path[, options])]()
 
 # File System
 >   Stability: 稳定
@@ -362,9 +374,137 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
     *   `flag` [\<String\>][String] 默认= `'a'`
 *   `callback` [\<Function\>][Function]
 
+异步追加数据到文件，如果文件不存在则创建文件。`data`可以是字符串或`Buffer`。
+
+例如：
+
+```js
+  fs.appendFile('message.txt', 'data to append', (err) => {
+    if (err) throw err;
+    console.log('The "data to append" was appended to file!');
+  });
+```
+
+如果传入`options`参数为字符串,则认为是字符串编码。例如：
+
+```js
+  fs.appendFile('message.txt', 'data to append', 'utf8', callback);
+```
+
+任何特定的文件描述符都会在追加的时候都已经被打开。
+
+注意：如果指定一个文件描述符,那么它就不会自动关闭。
+
+
+## fs.appendFileSync(file , data[,options])
+>   v0.6.7+
+
+*   `file`  [\<String\>][String] | [\<Buffer\>][Buffer] | [\<Number\>][Number]  文件名或者文件描述符
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `encoding` [\<String\>][String] | [\<Null\>][Null] 默认= `'utf-8'`
+    *   `mode` <Integer> 默认= `0o666`
+    *   `flag` [\<String\>][String] 默认= `'a'`
+
+`fs.appendFile()`函数的同步版本。返回`undefined`。
+
+## fs.chmod(path,mode,callback)
+>   v0.1.30+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `mode`  <Integer>
+*   `callback`  [\<Function\>][Function]
+
+异步的[chmod(2)][chmod(2)],执行失败callback的参数error会抛出，否则error为空。
+
+## fs.chmodSync(path,mode)
+>   v0.6.7+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `mode`  <Integer>
+
+同步的[chmod(2)][chmod(2)],返回`undefined`。
+
+## fs.chown(path,uid,gid,callback)
+>   v0.1.97+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `uid`  <Integer>
+*   `gid`  <Integer>
+*   `callback`  [\<Function\>][Function]
+
+异步的[chown(2)][chown(2)],执行失败callback的参数error会抛出，否则error为空。
+
+## fs.chownSync(path,uid,gid)
+>   v0.1.97+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `uid`  <Integer>
+*   `gid`  <Integer>
+
+同步的[chown(2)][chown(2)],返回`undefined`。
+
+## fs.close(fd,callback)
+>   v0.0.2+
+
+*   `fd` <Integer>
+*   `callback`  [\<Function\>][Function]
+
+异步的[close(2)][close(2)]。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.closeSync(fd)
+>   v0.0.21+
+
+*   `fd` <Integer>
+
+同步的[close(2)][close(2)],返回`undefined`。
+
+## fs.constants
+
+返回一个包含文件系统操作使用的常量的对象。特定常量描述在[FS Constants](#fscontents)。
+
+## fs.createReadStream(path[, options])
+>   v0.1.31+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `flags` [\<String\>][String]
+    *   `encoding` [\<String\>][String]
+    *   `fd` <Integer>
+    *   `mode` <Integer>
+    *   `autoClose` [\<Boolean\>][Boolean]
+    *   `start` <Integer>
+    *   `end`   <Integer>
+
+返回新的[ReadStream](#classfsreadstream)对象。（[Readable Stream][Readable-Stream]）。
+
+注意，可读流的`heighWaterMark`默认值是`16kb`，`fs.createReadStream()`方法返回的流的参数`heighWaterMark`默认值为`64kb`。
+
+`options`可以是对象或字符串，默认值如下：
+
+```js
+  {
+    flags: 'r',
+    encoding: null,
+    fd: null,
+    mode: 0o666,
+    autoClose: true
+  }
+```
+
+`options`对象的参数`start`和`end`参数用于限制读取文件的字节范围。`start`和`end`位置都包含在内并且`start`从0开始。任何一个可接受`Buffer`缓冲区的字符编码。
+
+
+如果给定`fd`，那么`ReadStream`将忽略`path`参数而是使用指定的文件描述符。这意味着`open`事件将不会被触发。注意`fd`应该是阻塞的；非阻塞的`fd`需要通过调用[net.Socket][net-Socket]。
+
+如果`autoClose`设置为`false`,那么文件描述符`fd`将不会被自动关闭，即使产生错误。你必须确保文件描述符已经关闭没有遗漏。
+如果`autoClose`设置为`true`(默认为：`true`)，当产生错误或读取文件完毕都会自动关闭文件描述符。
+
+`mode`用于设置文件的模式，仅已经创建的文件有效。
+
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
+[Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [Buffer]: ./Buffer.md#buffer
 [Null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
 [Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
@@ -376,3 +516,8 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 [MDN-JavaScript-Reference]: https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Date
 [stream-readable]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_readable
 [stream-writable]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_writable
+[chmod(2)]: http://man7.org/linux/man-pages/man2/chmod.2.html
+[chown(2)]: http://man7.org/linux/man-pages/man2/chown.2.html
+[close(2)]: http://man7.org/linux/man-pages/man2/close.2.html
+[Readable-Stream]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_readable
+[net-Socket]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
