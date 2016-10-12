@@ -55,6 +55,29 @@
     *   [fs.linkSync(srcpath, dstpath)]()
     *   [fs.lstat(path, callback)]()
     *   [fs.lstatSync(path)]()
+    *   [fs.mkdir(path[, mode], callback)]()
+    *   [fs.mkdirSync(path[, mode])]()
+    *   [fs.mkdtemp(prefix[, options], callback)]()
+    *   [fs.mkdtempSync(prefix[, options])]()
+    *   [fs.open(path, flags[, mode], callback)]()
+    *   [fs.openSync(path, flags[, mode])]()
+    *   [fs.read(fd, buffer, offset, length, position, callback)]()    
+    *   [fs.readSync(fd, buffer, offset, length, position)]()
+    *   [fs.readdir(path[, options], callback)]()
+    *   [fs.readdirSync(path[, options])]()
+    *   [fs.readFile(file[, options], callback)]()
+    *   [fs.readFileSync(file[, options])]()
+    *   [fs.readlink(path[, options], callback)]()
+    *   [fs.readlinkSync(path[, options])]()
+    *   [fs.realpath(path[, options], callback)]()
+    *   [fs.realpathSync(path[, options])]()
+    *   [fs.rename(oldPath, newPath, callback)]()
+    *   [fs.renameSync(oldPath, newPath)]()
+    *   [fs.rmdir(path, callback)]()
+    *   [fs.rmdirSync(path)]()
+    *   [fs.stat(path, callback)]()
+    *   [fs.statSync(path)]()
+    *   [fs.symlink(target, path[, type], callback)]()
 
 # File System
 >   Stability: 稳定
@@ -788,13 +811,355 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 
 同步的[lstat(2)][lstat(2)]。返回：`fs.Stats`实例。
 
+## fs.mkdir(path[,mode],callback)
+>   v0.1.8+
 
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `mode` \<Integer\>
+*   `callback` [\<Function\>][Function]
+
+异步的[mkdir(2)][mkdir(2)]。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.mkdirSync(path[,mode])
+>   v0.1.21+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `mode` \<Integer\>
+
+同步的[mkdir(2)][mkdir(2)]。返回：`undfined`。
+
+## fs.mkdtemp(prefix[,options],callback)
+>   v5.10.0+
+
+*   `prefix` [\<String\>][String]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+*   `callback` [\<Function\>][Function]
+
+创建一个唯一的临时目录。
+
+生成6位随机字符附加在创建的临时目录的名称`prefix`前缀后面。
+
+创建的文件夹路径会通过callback的第二个参数传入callback。
+
+`options`参数不管是字符串还是一个存在`encoding`属性的对象都会被视为传入字符编码。
+
+例如：
+
+```js
+  fs.mkdtemp('/tmp/foo-', (err, folder) => {
+    if (err) throw err;
+    console.log(folder);
+      // Prints: /tmp/foo-itXde2
+  });
+```
+
+注意：`fs.mkdtemp()`方法将随机产生的6个字符直接附加到字符串的前缀后面。例如，给定一个`/tmp`目录，如果目的是在这个`/tmp`目录里面创建一个临时的目录，那么`prefix`前缀后面必须以一个特定平台的分隔符作为结束标识(`require('path').sep`)。
+
+```js
+  // The parent directory for the new temporary directory
+  const tmpDir = '/tmp';
+
+  // This method is *INCORRECT*:
+  fs.mkdtemp(tmpDir, (err, folder) => {
+    if (err) throw err;
+    console.log(folder);
+      // Will print something similar to `/tmpabc123`.
+      // Note that a new temporary directory is created
+      // at the file system root rather than *within*
+      // the /tmp directory.
+  });
+
+  // This method is *CORRECT*:
+  const path = require('path');
+  fs.mkdtemp(tmpDir + path.sep, (err, folder) => {
+    if (err) throw err;
+    console.log(folder);
+      // Will print something similar to `/tmp/abc123`.
+      // A new temporary directory is created within
+      // the /tmp directory.
+  });
+```
+
+## fs.mkdtempSync(prefix[,options])
+>   v5.10.0+
+
+*   `prefix` [\<String\>][String]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+
+同步版的[fs.mkdtemp()] 。 返回创建的文件目录。
+
+`options`参数不管是字符串还是一个存在`encoding`属性的对象都会被视为传入字符编码。
+
+## fs.open(path,flags[,mode] , callback)
+>   v0.0.2+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `flags` [\<String\>][String] | [\<Number\>][Number]
+*   `mode` \<Integer\>
+*   `callback` [\<Function\>][Function]
+
+异步打开一个文件。可以查看[Open(2)][Open(2)]。`flags`可能的值：
+
+*   `r` - 以读的方式打开文件。文件不存在时抛出异常。
+*   `r+` - 以读和写的方式打开文件。文件不存在时抛出异常。
+*   `rs+` - 在同步模式下，以读和写的方式打开文件。命令操作系统忽视本地文件系统缓存。这主要是用于NFS挂载上打开文件,因为它允许您跳过可能不新鲜的本地缓存。它是一个对I / O性能有非常严重的影响所以不要使用这个标志,除非你需要它。这里并没有把`fs.open()`改为同步阻塞模式调用。相反`fs.openSync()`才是以同步阻塞的模式执行。
+*   `w` - 以写的方式打开文件。如果文件不存在则创建或者如果文件存在则截取。
+*   `wx` - 与`w`模式类似，但是文件存在时会报错。
+*   `w+` - 。如果文件不存在则创建或者如果文件存在则截取。
+*   `wx+` - 与`w+`模式类似，但是文件存在时会报错。
+*   `a` - 以追加的方式打开文件。如果文件不存在则创建。
+*   `ax` - 与`a`模式类似，但是文件存在时会报错。
+*   `a+` - 以读和追加的方式打开文件。如果文件不存在则创建。
+*   `ax+` - 与`a+`模式类似，但是文件存在时会报错。
+
+如果文件存在通过`mode`设置文件的模式。默认`0666`，可读和可写。
+
+callback函数参数`(err,fd)`。
+
+参数`flags`为`'x'`(`open(2)`的`O_EXCL`)确保路径是新创建的。在POSIX系统中,路径被认为存在,即使它是一个符号链接到一个不存在的文件。使用网络文件系统时这个标志可能会或可能不会有效。
+
+`flags`参数在[open(2)][Open(2)]函数文档中有对应的数字表示。通常使用`fs.contants`里面的有效值。在Windows系统，`flags`有对应的等价表示值来表示。例如。`O_WRONLY` 到`FILE_GENERITE`,或者`O_EXCL | O_CREAT`到`CREATE_NEW`。
+
+在Linux中，以追加模式打开文件时指定位置写入是无效的。内核会忽略定位参数总是直接把数据追加到文件的末尾。
+
+注意：`fs.open()`的某些`flags`的行为在不同平台表现出不同的特性。根据下面的例子，同样的在`OS X`和`Linux`以`a+`模式打开一个目录，都会报错。在`Windows`和`FreeBSD`,文件描述符会成功返回。
+
+```js
+  // OS X and Linux
+  fs.open('<directory>', 'a+', (err, fd) => {
+    // => [Error: EISDIR: illegal operation on a directory, open <directory>]
+  });
+
+  // Windows and FreeBSD
+  fs.open('<directory>', 'a+', (err, fd) => {
+    // => null, <fd>
+  });
+```
+
+## fs.openSync(path, flags[, mode])
+>   v0.1.21+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `flags` [\<String\>][String] | [\<Number\>][Number]
+*   `mode` \<Integer\>
+
+同步版的`fs.open()`。返回文件描述符`fd`。
+
+## fs.read(fd, buffer, offset, length, position, callback)
+>   v0.0.2+
+
+*   `fd` \<Integer\>
+*   `buffer` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `offset` \<Integer\>
+*   `length` \<Integer\>
+*   `position` \<Integer\>
+*   `callback` [\<Function\>][Function]
+
+根据`fd`指定的文件描述符读取文件数据。
+
+`buffer`是需要被写入的数据。
+
+`offset`是从`buffer`缓冲区的哪个位置开始开始写入数据。
+
+`length`是需要写入文件的字节长度。
+
+`postion` 是一个整型值，指读取的文件起始位置，如果position为null，将会从文件当前的位置读取数据。
+
+`callback` 包含3个参数 `(err , bytesRead , buffer)`。
+
+## fs.readSync(fd, buffer, offset, length, position)
+>   v0.1.21+
+
+*   `fd` \<Integer\>
+*   `buffer` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `offset` \<Integer\>
+*   `length` \<Integer\>
+*   `position` \<Integer\>
+
+同步的`fs.read()`。返回读取的字节长度`bytesRead`。
+
+## fs.readdir(path[, options], callback)
+>   v0.1.8+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+*   `callback` [\<Function\>][Function]
+
+异步的[readdir(3)][readdir(3)]读取目录信息。`callback`包含2个参数`(err,files)`。`files`是一个包含这个目录文件名称的数组，`.`和`..`除外。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置`callback`回调函数里面`files`数组中文件名的字符编码。如果`encoding`设为`buffer`，返回的`files`数组中文件名都是`Buffer`对象。
+
+fs.readdirSync(path[, options])
+>   v0.1.29+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+
+同步的[readdir(3)][readdir(3)]读取目录信息。返回个包含这个目录文件名称的数组，`.`和`..`除外。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置`callback`回调函数里面`files`数组中文件名的字符编码。如果`encoding`设为`buffer`，返回的`files`数组中文件名都是`Buffer`对象。
+
+## fs.readFile(file[, options], callback)
+>   v0.1.29+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer] | \<Integer\> 文件或文件描述符
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] | [\<Null\>][Null] 默认：`null`
+    *   `flag` [\<String\>][String] 默认： `'r'`
+*   `callback` [\<Function\>][Function]
+
+异步的读取文件内容，例如：
+
+```js
+  fs.readFile('/etc/passwd', (err, data) => {
+    if (err) throw err;
+    console.log(data);
+  });
+``` 
+
+`callback`有2个参数`(err,data)`，`data`为文件内容。
+
+没有指定编码，将返回原始的`buffer`数据。
+
+`options`为字符串，视为指定的编码格式。例如：
+
+```js
+  fs.readFile('/etc/passwd', 'utf8', callback);
+```
+
+任何指定文件描述符都必须是可读的。
+
+注意：根据指定的文件描述符读文件，文件不会在读取完成或发生错误后自动关闭。
+
+## fs.readFileSync(file[, options])
+>   v0.1.8+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer] | \<Integer\> 文件或文件描述符
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] | [\<Null\>][Null] 默认：`null`
+    *   `flag` [\<String\>][String] 默认： `'r'`
+
+同步的`fs.readFile`，返回文件内容。
+
+没有指定编码，将返回原始的`buffer`数据。
+
+## fs.readlink(path[, options], callback)
+>   v0.1.31+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+*   `callback` [\<Function\>][Function]
+
+异步的[readlink(2)][readlink(2)]，`callback`包含2个参数`(err,linkString)`。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置链接路径的字符编码。如果`encoding`设为`buffer`，返回的链接路径是`Buffer`对象。
+
+## fs.readlinkSync(path[, options])
+>   v0.1.31+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+
+异步的[readlink(2)][readlink(2)]，返回符号链接的字符串。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置链接路径的字符编码。如果`encoding`设为`buffer`，返回的链接路径是`Buffer`对象。
+
+## fs.realpath(path[, options], callback)
+>   v0.1.31+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+*   `callback` [\<Function\>][Function]
+
+异步的[realpath(3)][realpath(3)]。`callback`包含2个参数`(err,resolvedPath)`。路径相对于`process.cwd`。
+
+只支持`'utf-8'`字符串的路径。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置路径的字符编码。如果`encoding`设为`buffer`，返回的路径是`Buffer`对象。
+
+## fs.realpathSync(path[, options])
+>   v0.1.31+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] 默认：`'utf-8'`
+
+同步的[realpath(3)][realpath(3)]。返回路径。
+
+只支持`'utf-8'`字符串的路径。
+
+`options`参数如果是字符串或者是一个包含`encoding`属性的对象都视为是设置路径的字符编码。如果`encoding`设为`buffer`，返回的路径是`Buffer`对象。
+
+## fs.rename(oldPath, newPath, callback)
+>   v0.0.2+
+
+*   `oldPath` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `newPath` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[rename(2)][rename(2)]。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.renameSync(oldPath, newPath)
+>   v0.1.21+
+
+*   `oldPath` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `newPath` [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[rename(2)][rename(2)]。返回`undefined`。
+
+## fs.rmdir(path, callback)
+>   v0.0.2+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[rmdir(2)][rmdir(2)]。执行失败callback的参数error会抛出，否则error为空。
+
+## fs.rmdirSync(path)
+>   v0.1.21+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[rmdir(2)][rmdir(2)]。返回`undefined`。
+
+## fs.stat(path, callback)
+>   v0.0.2+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[stat(2)][stat(2)]。`callback`包含2个参数(err,stats)。`stats`是一个`fs.Stats`对象。更多信息请查看`fs.Stats`。
+
+## fs.statSync(path)
+>   v0.1.21+
+
+*   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[stat(2)][stat(2)]。返回`fs.Stats`实例。
+
+## fs.symlink(target, path[, type], callback)
+>   v0.1.31+
+
+*   `target` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `type`  [\<String\>][String]
+*   `callback` [\<Function\>][Function]
+
+异步的[symlink(2)][symlink(2)]。执行失败callback的参数error会抛出，否则error为空。
 
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [Buffer]: ./Buffer.md#buffer
+[Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [Null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
 [Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
@@ -819,3 +1184,10 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 [ftruncate(2)]: http://man7.org/linux/man-pages/man2/ftruncate.2.html
 [link(2)]: http://man7.org/linux/man-pages/man2/link.2.html
 [lstat(2)]: http://man7.org/linux/man-pages/man2/lstat.2.html
+[mkdir(2)]: http://man7.org/linux/man-pages/man2/mkdir.2.html
+[Open(2)]: http://man7.org/linux/man-pages/man2/open.2.html
+[readlink(2)]: http://man7.org/linux/man-pages/man2/readlink.2.html
+[realpath(3)]: http://man7.org/linux/man-pages/man3/realpath.3.html
+[rename(2)]: http://man7.org/linux/man-pages/man2/rename.2.html
+[rmdir(2)]: http://man7.org/linux/man-pages/man2/rmdir.2.html
+[stat(2)]: http://man7.org/linux/man-pages/man2/stat.2.html
