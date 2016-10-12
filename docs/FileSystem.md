@@ -462,7 +462,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `mode`  \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[chmod(2)][chmod(2)],执行失败callback的参数error会抛出，否则error为空。
+异步的[chmod(2)][chmod(2)],执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.chmodSync(path,mode)
 >   v0.6.7+
@@ -480,7 +480,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `gid`  \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[chown(2)][chown(2)],执行失败callback的参数error会抛出，否则error为空。
+异步的[chown(2)][chown(2)],执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.chownSync(path,uid,gid)
 >   v0.1.97+
@@ -497,7 +497,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `fd` \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[close(2)][close(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[close(2)][close(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.closeSync(fd)
 >   v0.0.21+
@@ -616,7 +616,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `mode` \<Integer\>
 *   `callback` [\<Function\>][Function]
 
-异步的[fchmod(2)][fchmod(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[fchmod(2)][fchmod(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.fchmodSync(fd,mode)
 >   v0.4.7+
@@ -635,7 +635,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `gid`  \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[fchown(2)][fchown(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[fchown(2)][fchown(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.fchownSync(fd,uid,gid)
 >   v0.4.7+
@@ -652,7 +652,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `fd` \<Integer\>
 *   `callback` [\<Function\>][Function]
 
-异步的[fdatasync(2)][fdatasync(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[fdatasync(2)][fdatasync(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.fdatasyncSync(fd)
 >   v0.1.96+
@@ -667,7 +667,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `fd` \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[fstat(2)][fstat(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[fstat(2)][fstat(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.fstatSync(fd)
 >   v0.1.95+
@@ -682,7 +682,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `fd` \<Integer\>
 *   `callback`  [\<Function\>][Function]
 
-异步的[fsync(2)][fsync(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[fsync(2)][fsync(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.fsyncSync(fd)
 >   v0.1.96+
@@ -699,7 +699,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `len` \<Integer\> 默认：0
 *   `callback` [\<Function\>][Function]
 
-异步的[ftruncate(2)][ftruncate(2)] 。执行失败callback的参数error会抛出，否则error为空。
+异步的[ftruncate(2)][ftruncate(2)] 。执行失败callback的参数error会抛出，否则没有参数返回。
 
 如果引用的文件描述符的文件的大小大于`len`。那么仅只有最开始长度为`len`的字节会被保留。
 
@@ -786,7 +786,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `dstpath`  [\<String\>][String] | [\<Buffer\>][Buffer]
 *   `callback` [\<Function\>][Function]
 
-异步的[link(2)][link(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[link(2)][link(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.linkSync(srcpath , dstpath)
 >   v0.1.30+
@@ -818,7 +818,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `mode` \<Integer\>
 *   `callback` [\<Function\>][Function]
 
-异步的[mkdir(2)][mkdir(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[mkdir(2)][mkdir(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.mkdirSync(path[,mode])
 >   v0.1.21+
@@ -907,7 +907,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 *   `rs+` - 在同步模式下，以读和写的方式打开文件。命令操作系统忽视本地文件系统缓存。这主要是用于NFS挂载上打开文件,因为它允许您跳过可能不新鲜的本地缓存。它是一个对I / O性能有非常严重的影响所以不要使用这个标志,除非你需要它。这里并没有把`fs.open()`改为同步阻塞模式调用。相反`fs.openSync()`才是以同步阻塞的模式执行。
 *   `w` - 以写的方式打开文件。如果文件不存在则创建或者如果文件存在则截取。
 *   `wx` - 与`w`模式类似，但是文件存在时会报错。
-*   `w+` - 。如果文件不存在则创建或者如果文件存在则截取。
+*   `w+` - 以读和写的方式打开文件。如果文件不存在则创建或者如果文件存在则截取。
 *   `wx+` - 与`w+`模式类似，但是文件存在时会报错。
 *   `a` - 以追加的方式打开文件。如果文件不存在则创建。
 *   `ax` - 与`a`模式类似，但是文件存在时会报错。
@@ -1104,7 +1104,7 @@ fs.readdirSync(path[, options])
 *   `newPath` [\<String\>][String] | [\<Buffer\>][Buffer]
 *   `callback` [\<Function\>][Function]
 
-异步的[rename(2)][rename(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[rename(2)][rename(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.renameSync(oldPath, newPath)
 >   v0.1.21+
@@ -1120,7 +1120,7 @@ fs.readdirSync(path[, options])
 *   `path` [\<String\>][String] | [\<Buffer\>][Buffer]
 *   `callback` [\<Function\>][Function]
 
-异步的[rmdir(2)][rmdir(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[rmdir(2)][rmdir(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
 
 ## fs.rmdirSync(path)
 >   v0.1.21+
@@ -1152,7 +1152,45 @@ fs.readdirSync(path[, options])
 *   `type`  [\<String\>][String]
 *   `callback` [\<Function\>][Function]
 
-异步的[symlink(2)][symlink(2)]。执行失败callback的参数error会抛出，否则error为空。
+异步的[symlink(2)][symlink(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
+`type`参数可以设置为`'dir'`,`'file'`,或`'junction'`（默认：`'file'`）并且只在Windows中有效（其它平台会被忽略）。
+注意Windows的`junction`类型要求目标路径必须是绝对路径。使用`'junction'`时，`target`参数会自动转换为绝对路径。
+
+例如：
+
+```js
+  fs.symlink('./foo', './new-port');
+```
+
+为`"foo"`创建一个符号链接`"new-port"`。
+
+## fs.symlinkSync(target, path[, type])
+>   v0.1.31+
+
+*   `target` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `type`  [\<String\>][String]
+
+同步的[symlink(2)][symlink(2)]。 返回`undefined`。
+
+## fs.truncate(path, len, callback)
+>   v0.8.6+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `len`   \<Integer\> 默认：0
+*   `callback` [\<Function\>][Function]
+
+异步的[truncate(2)][truncate(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
+以文件描述符为第一个参数传递。在这种情况下,`fs.ftruncate()`将被调用。
+
+## fs.truncateSync(path, len)
+>   v0.8.6+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `len`   \<Integer\> 默认：0
+
+同步的[truncate(2)][truncate(2)],返回`undefined`。以文件描述符为第一个参数传递。在这种情况下,`fs.ftruncateSync()`将被调用。
+
 
 ==================================未完待续...====================================
 
@@ -1191,3 +1229,5 @@ fs.readdirSync(path[, options])
 [rename(2)]: http://man7.org/linux/man-pages/man2/rename.2.html
 [rmdir(2)]: http://man7.org/linux/man-pages/man2/rmdir.2.html
 [stat(2)]: http://man7.org/linux/man-pages/man2/stat.2.html
+[symlink(2)]: http://man7.org/linux/man-pages/man2/symlink.2.html
+[truncate(2)]: http://man7.org/linux/man-pages/man2/truncate.2.html
