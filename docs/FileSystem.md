@@ -1284,8 +1284,229 @@ fs.utimesSync(path,atime,mtime)
 你仍然可以使用`fs.watchFile`的`stat`轮询,但它是缓慢和不可靠。
 
 ### Inodes
+在Linux和OS X系统上,`fs.watch()`通过解析路径得到一个[inode][inode]并且监听这个`inode`。如果监听的路径被删除并重新创建,它被分配一个新的索引节点。监听将发出一个事件删除,但将继续看原来的inode。新`inode`事件将不会被发送。这是预期行为。
 
-==================================未完待续...====================================
+### Filename Argument
+`callback`函数提供参数`filename`仅在Linux和Windows平台。即使平台提供，`filename`也不一定总是存在。因此，不要假定`callback`函数`filename`参数总是存在。如果是`null`还存在回退逻辑。
+
+```js
+  fs.watch('somedir', (eventType, filename) => {
+    console.log(`event type is: ${eventType}`);
+    if (filename) {
+      console.log(`filename provided: ${filename}`);
+    } else {
+      console.log('filename not provided');
+    }
+  });
+```
+
+## fs.watchFile(filename[,options],listener)
+>   v0.1.31+
+
+*   `filename`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `persistent` [\<Object\>][Object]
+    *   `interval` [\<Object\>][Object]
+*   `listener`  [\<Function\>][Function]
+
+监听文件变化。回调监听函数`listener`会在每次文件存取的时候触发调用。
+
+`options`是可选参数。如果提供就必须是对象。`options`对象必须包含属性`persistent`的`boolean`值，这个值表示这个过程是否应该继续运行,只要文件正在被监听。`options`的属性`interval`表明以多少毫秒为一个周期进行轮询。默认：`{persistent:true,interval:5007}`。
+
+`listener`回调函数包含2个参数一个是现在的`stat`和一个以前的`stat`对象:
+
+```js
+  fs.watchFile('message.text', (curr, prev) => {
+    console.log(`the current mtime is: ${curr.mtime}`);
+    console.log(`the previous mtime was: ${prev.mtime}`);
+  });
+```
+
+`stat`对象是`fs.Stat`的实例。
+
+如果想不仅在文件存取的时候下发通知，还希望文件修改的时候也下发通知，你必须比较`curr.mtime`和`prev.mtime`。
+
+注意：`fs.watchFile`操作导致了`ENDOENT`错误，他将执行一次监听函数，并且所有的字段都为0（或者，用Unix时间填充）。在Windows下，`blksize`和`blocks`字段为`undefined`,而不是0。如果文件之后被创建,监听函数将再次被调用，状态`stat`将是对象。从版本`v0.10`之后。
+
+注意：`fs.watch()`比`fs.watchFile()`和`fs.unwatchFile()`更高效。尽可能的使用`fs.watch()`替代`fs.watchFilee()`和`fs.unwatchFile()`。
+
+## fs.write(fd, buffer, offset, length[, position], callback)
+>   v0.0.2+
+
+*   `fd`  [\<Integer\>][Integer]
+*   `buffer`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `offset`  [\<Integer\>][Integer]
+*   `length`  [\<Integer\>][Integer]
+*   `position`  [\<Integer\>][Integer]
+*   `callback`  [\<Function\>][Function]
+
+根据`fd`把`buffer`数据写入文件。
+
+`offset`和`length`决定`buffer`的哪一部分将被写入文件。
+
+`position`决定从文件的哪个位置开始写入`buffer`数据。如果`typeof position !== 'number'`,数据将从当前位置写入。详情[pwrite(2)][pwrite(2)]。
+
+`callback`回调函数包含3个参数`(err,written,buffer)`,缓冲区`buffer`有多少字节被写入`written`。
+
+注意：在不等待`callback`回调就同时多次使用`fs.write`是不安全的。针对这种情况，`fs.createWriteStream()`是更换的选择。
+
+Linux系统中，以追加模式打开的文件使用定位写入是无效的。内核会忽略这个参数会直接将数据添加到文件末尾。
+
+
+## fs.write(fd, data[, position[, encoding]], callback)
+*   `fd`  [\<Integer\>][Integer]
+*   `data`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `position`  [\<Integer\>][Integer]
+*   `encoding`  [\<String\>][String]
+*   `callback`  [\<Function\>][Function]
+
+根据`fd`把`data`数据写入文件。如果数据不是`Buffer`实例，则以字符串形式写入。
+
+`position`决定从文件的哪个位置开始写入`buffer`数据。如果`typeof position !== 'number'`,数据将从当前位置写入。详情[pwrite(2)][pwrite(2)]。
+
+`encoding`字符串编码。
+
+`callback`回调函数包含3个参数`(err,written,string)`,有多少字节被写入`written`。注意：写入的字节不是字符串字符长度。详情[Buffer.byteLength][Buffer.byteLength]。
+
+不像在写`buffer`缓冲区,整个字符串必须全部写入。不能只写入一部分子字符串。这是因为数据偏移的字节数不等于字符串偏移的字符数。
+
+注意：在不等待`callback`回调就同时多次使用`fs.write`是不安全的。针对这种情况，`fs.createWriteStream()`是更换的选择。
+
+Linux系统中，以追加模式打开的文件使用定位写入是无效的。内核会忽略这个参数会直接将数据添加到文件末尾。
+
+## fs.writeFile(file, data[, options], callback)
+>   v0.1.29+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer] | [\<Integer\>][Integer] 文件名或文件描述符
+*   `data` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] | [\<Null\>][Null] 默认：`'utf-8'`
+    *   `mode` [\<Integer\>][Integer] 默认：`0o666`
+    *   `flag` [\<String\>][String]  默认：`'w'`
+*   `callback`  [\<Function\>][Function]
+
+异步的往文件中希尔数据，如果文件存在就替换掉。`data`可以是字符串或`Buffer`实例。
+
+`encoding`会被忽略如果`data`是`Buffer`实例。默认：`'utf-8'`。
+
+例如：
+
+```js
+  fs.writeFile('message.txt', 'Hello Node.js', (err) => {
+    if (err) throw err;
+    console.log('It\'s saved!');
+  });
+```
+
+如果`options`为字符串，视为传入的字符编码。例如：
+
+```js
+  fs.writeFile('message.txt', 'Hello Node.js', 'utf8', callback);
+```
+
+任何指定的文件描述符必须支持写操作。
+
+注意：在不等待`callback`回调就同时多次使用`fs.writeFile`是不安全的。针对这种情况，`fs.createWriteStream()`是更换的选择。
+
+注意：如果`file`参数传入的是文件描述符，那么`fd`将不会自动关闭。
+
+## fs.writeFileSync(file, data[, options])
+>   v0.1.29+
+
+*   `file` [\<String\>][String] | [\<Buffer\>][Buffer] | [\<Integer\>][Integer] 文件名或文件描述符
+*   `data` [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<String\>][String] | [\<Object\>][Object]
+    *   `endcoding` [\<String\>][String] | [\<Null\>][Null] 默认：`'utf-8'`
+    *   `mode` [\<Integer\>][Integer] 默认：`0o666`
+    *   `flag` [\<String\>][String]  默认：`'w'`
+
+同步的`fs.writeFile()`，返回:`undefined`。
+
+## fs.writeSync(fd, buffer, offset, length[, position])
+>   v0.1.21+
+
+*   `fd`  [\<Integer\>][Integer]
+*   `buffer`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `offset`  [\<Integer\>][Integer]
+*   `length`  [\<Integer\>][Integer]
+*   `position`  [\<Integer\>][Integer]
+
+## fs.writeSync(fd, data[, position[, encoding]])
+>   v0.11.5+
+
+*   `fd`  [\<Integer\>][Integer]
+*   `data`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `position`  [\<Integer\>][Integer]
+*   `endcoding` [\<String\>][String]
+
+同步的`fs.write()`，返回写入的字节数。
+
+## FS Constants
+`fs.constants`提供的常量。注意：不是所有的常量都是跨平台的。
+
+### File Access Constants
+`fs.access()`使用的常量：
+
+| 常量 | 描述 |
+| --- | --- |
+| F_OK | 表明调用过程中文件是可见的 |
+| R_OK | 表明调用过程中文件是可读的 |
+| W_OK | 表明调用过程中文件是可写的 |
+| X_OK | 表明调用过程中文件是可执行的 |
+
+### File Open Constants
+`fs.open()`使用的常量
+
+| 常量 | 描述 |
+| --- | --- |
+| O_RDONLY | 使用只读模式打开文件 |
+| O_WRONLY | 使用只写模式打开文件 |
+| O_RDWR | 使用读写模式打开文件 |
+| O_CREAT | 文件不存在就创建文件 |
+| O_EXCL | 如果设置了O_CREAT或者文件已经存在则会打开文件失败 |
+| O_NOCTTY | 打开终端设备，如果已经打开则不打开否则打开终端设备 |
+| O_TRUNC | 文件存在并且是常规文件，有写入功能，它的长度会被截取为0 |
+| O_APPEND | 以追加的方式把数据添加到文件 |
+| O_DIRECTORY | 打开一个目录，否则报错 |
+| O_NOATIME | 文件系统读取文件时不再将信息更新到`atime`参数上。仅在Linux系统有效。 |
+| O_NOFOLLOW | 如果打开的文件是符号链接将报错 |
+| O_SYNC | 以同步I/O的方式打开 |
+| O_SYMLINK | 打开的是符号链接本身而不是指向的数据源 |
+| O_DIRECT | 试图将I/O操作的影响降到最小 |
+| O_NONBLOCK | 试图在非阻塞的情况下打开文件 |
+
+### File Type Constants
+`fs.Stats`对象的`mode`属性，用来决定文件的类型。
+
+| 常量 | 描述 |
+| --- | --- |
+| S_IFMT | 位元遮罩用于提取文件类型代码。|
+| S_IFREG | 常规文件 |
+| S_IFDIR | 目录 |
+| S_IFCHR | 字符设备 |
+| S_IFBLK | 块设备 |
+| S_IFIFO | FIFO/pipe |
+| S_IFLNK | 符号链接 |
+| S_IFSOCK | socket |
+
+### File Mode Constants
+`fs.Stats`对象的`mode`属性，用来决定文件的权限。
+
+| 常量 | 描述 |
+| --- | --- |
+| S_IRWXU | 拥有者-包含文件的读写和执行权限 |
+| S_IRUSR | 拥有者-包含文件的读权限 |
+| S_IWUSR | 拥有者-包含文件的写权限 |
+| S_IXUSR | 拥有者-包含文件的执行权限 |
+| S_IRWXG | 用户组-包含文件的读写和执行权限 |
+| S_IRGRP | 用户组-包含文件的读权限 |
+| S_IWGRP | 用户组-包含文件的写权限 |
+| S_IXGRP | 用户组-包含文件的执行权限 |
+| S_IRWXO | 其它用户-包含文件的读写和执行权限 |
+| S_IROTH | 其它用户-包含文件的读权限 |
+| S_IWOTH | 其它用户-包含文件的写权限 |
+| S_IXOTH | 其它用户-包含文件的执行权限 |
+
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
@@ -1332,3 +1553,6 @@ fs.utimesSync(path,atime,mtime)
 [event-ports]: http://illumos.org/man/port_create
 [ReadDirectoryChangesW]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365465%28v=vs.85%29.aspx
 [AHAFS]: https://www.ibm.com/developerworks/aix/library/au-aix_event_infrastructure/
+[inode]: https://en.wikipedia.org/wiki/Inode
+[pwrite(2)]: http://man7.org/linux/man-pages/man2/pwrite.2.html
+[Buffer.byteLength]: (./Buffer.md#class-method-bufferbytelengthstring-encoding)
