@@ -211,7 +211,7 @@
 ### EventEmitter.listenerCount(emitter, eventName)
 >   Added in: v0.9.12  Deprecated: v4.0.0
 
->   用 `emitter.klistenerCount()`代替
+>   用 `emitter.listenerCount()`代替
 
 这个方法返回`emitter`注册的监听器的数量。
 
