@@ -1375,6 +1375,13 @@ Node.js最新支持的字符编码格式：
 >   用 `Buffer.allocUnsafeSlow()`代替
 
 
+
+备注：有一些功能类似的没有翻译
+
+=====================================[完]======================================
+
+
+
 [TypedArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray
 [TypedArray-from]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/from
 [Uint8Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array
