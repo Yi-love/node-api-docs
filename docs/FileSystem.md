@@ -78,6 +78,9 @@
     *   [fs.stat(path, callback)]()
     *   [fs.statSync(path)]()
     *   [fs.symlink(target, path[, type], callback)]()
+    *   [fs.symlinkSync(target, path[, type])]()
+    *   [fs.truncate(path, len, callback)]()
+    *   [fs.truncateSync(path, len)]()
 
 # File System
 >   Stability: 稳定
@@ -1191,11 +1194,102 @@ fs.readdirSync(path[, options])
 
 同步的[truncate(2)][truncate(2)],返回`undefined`。以文件描述符为第一个参数传递。在这种情况下,`fs.ftruncateSync()`将被调用。
 
+## fs.unlink(path,callback)
+>   v0.0.2+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `callback` [\<Function\>][Function]
+
+异步的[unlink(2)][unlink(2)]。执行失败callback的参数error会抛出，否则没有参数返回。
+
+## fs.unlinkSync(path)
+>   v0.1.21+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+
+同步的[unlink(2)][unlink(2)]。返回：`undefined`。
+
+## fs.unwatchFile(filename[, listener])
+>   v0.1.31+
+
+*   `filename`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `listener`  [\<Function\>][Function]
+
+停止对`filename`文件的改变进行监听。如果指定了`listener`，只有这个独有的事件监听器会被移除。否则会移除所有的监听事件。
+
+在监听事件添加之前执行`fs.unwatchFile()`是无效的，也不会产生错误。
+
+注意：`fs.watch()`比`fs.watchFile()`和`fs.unwatchFile()`更高效。尽可能的使用`fs.watch()`替代`fs.watchFilee()`和`fs.unwatchFile()`。
+
+## fs.utimes(path,atimes,mtime,callback)
+>   v0.4.2+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `atime` [\<Integer\>][Integer]
+*   `mtime` [\<Integer\>][Integer]
+*   `callback` [\<Function\>][Function]
+
+根据提供的文件路径改变文件的时间戳。
+
+注意：相关函数的`atime`和`mtime`参数遵循如下这些规则：
+
+*   这个值必须是单位为秒的Unix时间戳。例如，`Date.now()`返回的是毫秒，所以必须在使用之前`/1000`（即：`Date.now()/1000`）。
+*   如果该值是一个数字字符串。如：`'123456789'`，这个值会转换为相应的数字。
+*   如果这个值是`NaN`或`Infinity`，这个值将转换为`Date.now()/1000`。
+
+fs.utimesSync(path,atime,mtime)
+>   v0.4.2+
+
+*   `path`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `atime` [\<Integer\>][Integer]
+*   `mtime` [\<Integer\>][Integer]
+
+同步版的`fs.utimes()`。返回：`undefined`。
+
+## fs.watch(filename[, options][, listener])
+>   v0.5.10+
+
+*   `filename`  [\<String\>][String] | [\<Buffer\>][Buffer]
+*   `options` [\<Object\>][Object] | [\<String\>][String]
+    *   `persistent` [\<Object\>][Object]  表明这个过程是否应该继续运行,只要文件正在被监听。默认：`true`
+    *   `recursive`  [\<Object\>][Object]  表明是监听所有的子目录还是仅监听当前目录。适用于指定的目录和支持的平台上（详情：[Caveats](#caveats)）。默认：`false`
+    *   `encoding`  [\<String\>][String]  指定传入监听器的字符编码格式。默认:`'utf-8'`
+*   `listener`  [\<Function\>][Function]
+
+监听`filename`的变化，`filename`可以是一个文件或一个目录。返回一个`fs.FSWatcher`对象。
+
+第二个参数是可选的。如果`options`为字符串，则视为传入字符编码。否则`options`应该传入一个对象。
+
+事件监听器回调函数包含2个参数`(eventType,filename)`。`eventType`要么是`rename`或`change`，并且`filename`是触发事件的文件名。
+
+请注意：事件回调函数是附属在由`fs.FSWatcher`触发的`change`事件上。但它们并不是一回事。
+
+### Caveats
+`fs.watch` API并不是100%的支持所有的平台，并且有一些情况下是无效的。
+
+`recursive`选项仅支持OS X和Windows。
+
+### Availability
+实际依赖于底层操作系统提供的一种文件系统变化的通知。
+
+*   在Linux系统中，使用[inotify][inotify]。
+*   在BSD系统中，使用[kqueue][kqueue]。
+*   在OS X 中，文件使用[kqueue][kqueue] 目录使用[FSEvents][FSEvents]。
+*   在SunOS 系统中（包括 Solaris 和 SmartOS），使用 [event ports][event-ports]。
+*   在Windows系统中，事实依赖于[ReadDirectoryChangesW][ReadDirectoryChangesW]。
+*   在Aix系统中，事实依赖于[AHAFS][AHAFS],必须启用。
+
+如果底层函数由于某种原因没有提供功能，那么`fs.wtach`将无法执行。例如，在网路文件系统（NFS,SMB等）或使用虚拟软件如（Vagrant,Docker等）下,监听文件或目录在有些情况下是不可靠的。
+
+你仍然可以使用`fs.watchFile`的`stat`轮询,但它是缓慢和不可靠。
+
+### Inodes
 
 ==================================未完待续...====================================
 
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
+[Integer]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
 [Buffer]: ./Buffer.md#buffer
 [Object]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object
 [Null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type
@@ -1231,3 +1325,10 @@ fs.readdirSync(path[, options])
 [stat(2)]: http://man7.org/linux/man-pages/man2/stat.2.html
 [symlink(2)]: http://man7.org/linux/man-pages/man2/symlink.2.html
 [truncate(2)]: http://man7.org/linux/man-pages/man2/truncate.2.html
+[unlink(2)]: http://man7.org/linux/man-pages/man2/unlink.2.html
+[inotify]: http://man7.org/linux/man-pages/man7/inotify.7.html
+[kqueue]: https://www.freebsd.org/cgi/man.cgi?kqueue
+[FSEvents]: https://developer.apple.com/library/mac/documentation/Darwin/Conceptual/FSEvents_ProgGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40005289-CH1-SW1
+[event-ports]: http://illumos.org/man/port_create
+[ReadDirectoryChangesW]: https://msdn.microsoft.com/en-us/library/windows/desktop/aa365465%28v=vs.85%29.aspx
+[AHAFS]: https://www.ibm.com/developerworks/aix/library/au-aix_event_infrastructure/
