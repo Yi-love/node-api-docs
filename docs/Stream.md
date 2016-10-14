@@ -1,8 +1,120 @@
 # 内容目录
 
 *   [Stream]()
-*   [Organization of this document]()
-*   [Types of Streams]()
-    *   [Object Mode]()
-    *   [Buffering]()
-*   [API for Stream Consumers]()
+    *   [Organization of this document]()
+    *   [Types of Streams]()
+        *   [Object Mode]()
+        *   [Buffering]()
+    *   [API for Stream Consumers]()
+
+
+
+# Stream
+>   Stability:  稳定
+
+在Node.js里面 流是一个为流数据服务的抽象接口。`stream`模块提供基础的API来实现流接口是为了能更好的创建对象。
+
+Node.js提供了很多的流对象。例如， [request to an HTTP server][request-to-an-HTTP-server] 和 [process.stdout][process.stdout] 都是流的实例。
+
+`stream`是可读的，可写的，或者都有。所有的`stream`都是[EventEmitter][EventEmitter]的实例。
+
+`stream`模块可以通过以下方式使用：
+
+```js
+  const stream = require('stream');
+```
+
+这对Node.js的使用者去理解`stream`是如何工作是非常重要的，`stream`模块本身对开发者创建新类型的流对象实例是很有帮助的。
+那些要使用流对象的开发人员将很少(如果有的话)有需要直接使用流模块。
+
+## Organization of this document
+
+本文档分为两个主要部分和第三部分需要注意的地方。第一部分讲应用中使用的流的API。第二部分讲新的实现类型流的API。
+
+## Types of Streams
+Node.js有4种基本类型的流：
+
+*   [Readable][Readable] - 可读流（例如： [fs.createReadStream()][fs.createReadStream()]）。
+*   [Writable][Writable] - 可写流（例如：[fs.createWriteStream()][fs.createWriteStream()]）。
+*   [Duplex][Duplex] - 可读和可写流（例如：[net.Socket][net.Socket]）。
+*   [Transform][Transform] - 在可读和可写流的基础上可以对数据进行修改和转换的流（例如：[zlib.createDeflate()][zlib.createDeflate()]）。
+
+### Object Mode
+所有流的创建都是由Node.js操作字符串和`Buffer`对象。流可能实现与其它类型的JavaScript值的协同工作（除了`null`，一个流内的特殊目标）。这样的流被认为是在“对象模式”。
+
+当创建流对象实例时可以使用`objectMode`参数切换到对象模式。试图切换现有流到对象模式是不安全的。
+
+### Buffering
+保存在内部缓冲区的[Readable][Readable]和[Writable][Writable]数据可以使用各自的`readable._readableState.buffer`和`writable._writableState.getBuffer()`重写读取。
+
+缓冲区数据的总数取决于`stream`构造函数参数`highWaterMark`的大小。常规流，`highWaterMark`表示总字节数。对象模式的流，`highWaterMark`表示对象的总字节数。
+
+当实现调用`stream.push(chunk)`时数据缓冲在可读流。如果`Stream`中的消费者没有调用`stream.read()`，数据会一缓存在内部队列。直到有消费者调用`stream.read()`。
+
+一旦内部读取缓冲区的总大小达到`highWaterMark`指定的阈值,将暂时停止从底层资源读取数据流到当前数据缓冲直到当前缓存已被消耗(即流将停止调用内部`readable._read()`方法,这个方法用于填补读取缓冲区)。
+
+当`writable.write(chunk)`方法被调用多次时数据缓冲在可写流。内部写缓冲区的总大小小于`highWaterMark`指定的阈值时，调用`writable.write()`将返回`true`。否则，返回`false`。
+
+`highWaterMark`在`stream` API中是一个关键目标。特别是在`stream.pipe()`方法中，它限制缓冲区数据在一个可以接受的水平。如此数据来源和目标以不同的速度输入和输出以致不会压垮可用内存。
+
+因为 `Duplex` 和 `Transform` 流都是可读和可写的，每个维持者2个分离的内部缓存用于读和写，允许每一方独立运作的同时保持一个适当的和有效的数据流。例如，`net.Socket`实例是`Duplex`流，可读流允许消费者从套字接口读取数据，另一边可写流允许往套字接口写数据。因为数据可以写入套接字以快或慢的速度比收到数据,这是对于每一方的操作很重要(和缓冲区)独立于其他操作。
+
+## API for Stream Consumers
+所有的Node.js应用，不管以多么简单的方式使用`stream`。下面这个例子在Node.js应用中实现一个`HTTP`服务器并使用`stream`:
+
+```js
+  const http = require('http');
+
+  const server = http.createServer( (req, res) => {
+    // req is an http.IncomingMessage, which is a Readable Stream
+    // res is an http.ServerResponse, which is a Writable Stream
+
+    let body = '';
+    // Get the data as utf8 strings.
+    // If an encoding is not set, Buffer objects will be received.
+    req.setEncoding('utf8');
+
+    // Readable streams emit 'data' events once a listener is added
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+
+    // the end event indicates that the entire body has been received
+    req.on('end', () => {
+      try {
+        const data = JSON.parse(body);
+        // write back something interesting to the user:
+        res.write(typeof data);
+        res.end();
+      } catch (er) {
+        // uh oh!  bad json!
+        res.statusCode = 400;
+        return res.end(`error: ${er.message}`);
+      }
+    });
+  });
+
+  server.listen(1337);
+
+  // $ curl localhost:1337 -d '{}'
+  // object
+  // $ curl localhost:1337 -d '"foo"'
+  // string
+  // $ curl localhost:1337 -d 'not json'
+  // error: Unexpected token o
+```
+
+=======================================[未完待续...]=============================================
+
+
+[request-to-an-HTTP-server]: https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_class_http_incomingmessage
+[process.stdout]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stdout
+[EventEmitter]: https://nodejs.org/dist/latest-v6.x/docs/api/events.html#events_class_eventemitter
+[Readable]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_readable
+[fs.createReadStream()]: https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_createreadstream_path_options
+[Writable]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_writable
+[fs.createWriteStream()]: https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_createwritestream_path_options
+[Duplex]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_duplex
+[net.Socket]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
+[Transform]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_transform
+[zlib.createDeflate()]: https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html#zlib_zlib_createdeflate_options
