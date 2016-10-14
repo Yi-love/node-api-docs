@@ -550,7 +550,7 @@ Node v0.12版本之前，在windows系统上`ctime`和`birthtime`都表示创建
 
 返回新的[ReadStream](#classfsreadstream)对象。（[Readable Stream][Readable-Stream]）。
 
-注意，可读流的`heighWaterMark`默认值是`16kb`，`fs.createReadStream()`方法返回的流的参数`heighWaterMark`默认值为`64kb`。
+注意，可读流的`highWaterMark`默认值是`16kb`，`fs.createReadStream()`方法返回的流的参数`highWaterMark`默认值为`64kb`。
 
 `options`可以是对象或字符串，默认值如下：
 
