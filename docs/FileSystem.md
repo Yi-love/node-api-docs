@@ -86,7 +86,7 @@
     *   [fs.unwatchFile(filename[, listener])](#fsunwatchfilefilename-listener)
     *   [fs.utimes(path, atime, mtime, callback)](#fsutimespathatimesmtimecallback)
     *   [fs.utimesSync(path, atime, mtime)](#fswatchfilename-options-listener)
-    *   [fs.watch(filename[, options][, listener])](#)
+    *   [fs.watch(filename[, options][, listener])](#fswatchfilename-options-listener)
         *   [Caveats](#caveats)
         *   [Availability](#availability)
         *   [Inodes](#inodes)
