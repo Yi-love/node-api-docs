@@ -6,8 +6,19 @@
         *   [Object Mode]()
         *   [Buffering]()
     *   [API for Stream Consumers]()
-
-
+        *   [Writable Streams]()
+            *   [Class: stream.Writable]()
+                *   [Event: 'close']()
+                *   [Event: 'drain']()
+                *   [Event: 'error']()
+                *   [Event: 'finish']()
+                *   [Event: 'pipe']()
+                *   [Event: 'unpipe']()
+                *   [writable.cork()]()
+                *   [writable.end([chunk][, encoding][, callback])]()
+                *   [writable.setDefaultEncoding(encoding)]()
+                *   [writable.uncork()]()
+                *   [writable.write(chunk[, encoding][, callback])]()
 
 # Stream
 >   Stability:  稳定
@@ -104,7 +115,160 @@ Node.js有4种基本类型的流：
   // error: Unexpected token o
 ```
 
-=======================================[未完待续...]=============================================
+[Writable][Writable]可写流（例如上面的`res`）提供`write()`和`end()`方法把数据写到流上。
+
+[Readable][Readable]可读流使用[EventEmitter][EventEmitter]API对流中数据进行监听，数据可读的时候就通知应用程序代码。可以使用多种方式对流中的数据进行读取。
+
+[Writable][Writable]可写流和 [Readable][Readable] 可读流都是可以在多种方式下使用[EventEmitter][EventEmitter]API与当前流进行通讯。
+
+`Duplex` 和 `Transform` 流都是可读和可写的。
+
+应用程序数据写入或消费的数据流都不需要直接实现流接口并且没有理由使用`require('stream')`。
+
+
+开发者希望实现新类型的流，应该参考这一部分[API for Stream Implementers][]。
+
+### Writable Streams
+可写数据流是一个抽象的数据写入的目的地。
+
+可写流包括：
+
+*   [HTTP requests, on the client][HTTP-requests-on-the-client]
+*   [HTTP responses, on the server][HTTP-responses-on-the-server]
+*   [fs write streams][fs-write-streams]
+*   [zlib streams][zlib-streams]
+*   [crypto streams][crypto-streams]
+*   [TCP sockets][TCP-sockets]
+*   [child process stdin][child-process-stdin]
+*   [process.stdout][process.stdout] , [process.stderr][process.stderr]
+
+注意：有的例子实际是实现[Writable][Writable]接口的`Duplex`流。
+
+所有[Writable][Writable]可写流的接口实现来自`stream.Writable`类。
+
+可以使用多种不同的方式实现具体的[Writable][Writable]可写流实例。所有可写流遵循相同的基本使用模式如以下示例中所示：
+
+```js
+  const myStream = getWritableStreamSomehow();
+  myStream.write('some data');
+  myStream.write('some more data');
+  myStream.end('done writing data');
+```
+
+### Class: stream.Writable
+>   v0.9.4+
+
+### Event: 'close'
+>   v0.9.4+
+
+底层资源（如文件描述符）关闭的时候触发`close`事件。事件表明,没有更多的事件将被触发，更深层次的计算也不会发生。
+
+不是所有的可写流都会触发`close`事件。
+
+### Event: 'drain'
+>   v0.9.4+
+
+如果调用[stream.write(chunk)]()返回`false`,在适当的时机往流里面重新写入数据时`drain`事件将会被触发。
+
+```js
+  // Write the data to the supplied writable stream one million times.
+  // Be attentive to back-pressure.
+  function writeOneMillionTimes(writer, data, encoding, callback) {
+    let i = 1000000;
+    write();
+    function write() {
+      var ok = true;
+      do {
+        i--;
+        if (i === 0) {
+          // last time!
+          writer.write(data, encoding, callback);
+        } else {
+          // see if we should continue, or wait
+          // don't pass the callback, because we're not done yet.
+          ok = writer.write(data, encoding);
+        }
+      } while (i > 0 && ok);
+      if (i > 0) {
+        // had to stop early!
+        // write some more once it drains
+        writer.once('drain', write);
+      }
+    }
+  }
+```
+
+### Event: 'error'
+>   v0.9.4+
+
+*   [\<Error\>][Error]
+
+如果``写或管道数据发送错误将触发`error`事件。 监听函数将返回一个`Error`对象的参数。
+
+注意： 流不会因为`error`事件的触发而关闭。
+
+### Event: 'finish'
+>   v0.9.4+
+
+`finish`事件将会在[stream.end()]()方法和所有数据在底层系统都已经完成更新之后触发。
+
+```js
+  const writer = getWritableStreamSomehow();
+  for (var i = 0; i < 100; i ++) {
+    writer.write('hello, #${i}!\n');
+  }
+  writer.end('This is the end\n');
+  writer.on('finish', () => {
+    console.error('All writes are now complete.');
+  });
+```
+
+### Event: 'pipe']
+>   v0.9.4+
+
+*   `src` [\<stream.Readable\>][stream.Readable] 数据源流管道可写的
+
+当在可读流上调用[stream.pipe()]()方法时触发`pipe`事件，为目标添加可读性。
+
+```js
+  const writer = getWritableStreamSomehow();
+  const reader = getReadableStreamSomehow();
+  writer.on('pipe', (src) => {
+    console.error('something is piping into the writer');
+    assert.equal(src, reader);
+  });
+  reader.pipe(writer);
+```
+
+### Event: 'unpipe'
+>   v0.9.4+
+
+*   `src` \<[Readable][Readable] Stream \>  移除数据源流管道可写性
+
+当在[Readable][Readable]可读流上调用[stream.unpipe()]()方法时触发`unpipe`事件，移除目标的可读性。
+
+```js
+  const writer = getWritableStreamSomehow();
+  const reader = getReadableStreamSomehow();
+  writer.on('unpipe', (src) => {
+    console.error('Something has stopped piping into the writer.');
+    assert.equal(src, reader);
+  });
+  reader.pipe(writer);
+  reader.unpipe(writer);
+```
+
+### writable.cork()
+>   v0.11.2+
+
+`writable.cork()`方法迫使数据缓存到内存。只有[stream.uncork()]()或[stream.end()]()方法被调用了才会将缓存的数据更新到底层。
+
+`write.cork`专注于避免写入过多小块数据的时候不会造成内部缓冲区阻塞的情况。这对性能有负面影响。`writable._writev()`可能更有优势。
+
+### writable.end([chunk][, encoding][, callback])
+>   v0.11.2+
+
+====================================[未完待续...]==========================================
 
 
 [request-to-an-HTTP-server]: https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_class_http_incomingmessage
@@ -118,3 +282,13 @@ Node.js有4种基本类型的流：
 [net.Socket]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
 [Transform]: https://nodejs.org/dist/latest-v6.x/docs/api/stream.html#stream_class_stream_transform
 [zlib.createDeflate()]: https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html#zlib_zlib_createdeflate_options
+[HTTP-requests-on-the-client]: https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_class_http_clientrequest
+[HTTP-responses-on-the-server]: https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_class_http_serverresponse
+[fs-write-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_class_fs_writestream
+[zlib-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html
+[crypto-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/crypto.html
+[TCP-sockets]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
+[child-process-stdin]: https://nodejs.org/dist/latest-v6.x/docs/api/child_process.html#child_process_child_stdin
+[process.stdout]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stdout
+[process.stderr]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stderr
+[Error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
