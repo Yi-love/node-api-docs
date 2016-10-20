@@ -266,11 +266,85 @@ Node.js有4种基本类型的流：
 `write.cork`专注于避免写入过多小块数据的时候不会造成内部缓冲区阻塞的情况。这对性能有负面影响。`writable._writev()`可能更有优势。
 
 ### writable.end([chunk][, encoding][, callback])
+>   v0.9.4+
+
+*   `chunk` [\<String\>][String] | [\<Buffer\>][Buffer] | \<any\> 写入数据的参数（可选）。流不支持对象操作，`chunk`必须是`String`或者`Buffer`。
+对象模式的流，`chunk`可以是任意的JavaScript值出了`null`。
+*   `encoding` [\<String\>][String] 编码格式，`chunk`是字符串时有效。
+*   `callback` [\<Function\>][Function] 可选参数，流写入完成的时候执行的回调。
+
+执行`writable.end()`方法意味着不再有数据写入`Writable`。可选参数`chunk`和`encoding`参数允许在马上要关闭的流之前写入最后一块添加的数据。
+`callback`如果提供，将监听`finish`事件。
+
+在`stream.end()`方法之后调用`stream.write()`将提高错误率的发生。
+
+```js
+  // write 'hello, ' and then end with 'world!'
+  const file = fs.createWriteStream('example.txt');
+  file.write('hello, ');
+  file.end('world!');
+  // writing more now is not allowed!
+```
+
+### writable.setDefaultEncoding(encoding)
+> v0.11.15+
+
+*   `encoding` [\<String\>][String] 新的字符编码
+*   返回：`this`
+
+`writable.setDefaultEncoding()`方法用于设置`Writable`流的默认编码格式。
+
+### writable.uncork()
 >   v0.11.2+
+
+`writable.uncork()`将冲洗所有的缓存数据，从`stream.cork()`调用之后。
+
+当使用`writable.cork()` 和`writable.uncork()`来管理写入流缓存，调用`writable.uncork()`使用延时调用模式`process.nextTick()`将更高效。
+这样`writable.write()`将发生在Node.js事件循环阶段。
+
+```js
+  stream.cork();
+  stream.write('some ');
+  stream.write('data ');
+  process.nextTick(() => stream.uncork());
+```
+
+如果`writable.cork()`方式在流中被多次调用，那么必须以相同次数的`writable.uncork()`来冲洗缓冲区数据。
+
+```js
+  stream.cork();
+  stream.write('some ');
+  stream.cork();
+  stream.write('data ');
+  process.nextTick(() => {
+    stream.uncork();
+    // The data will not be flushed until uncork() is called a second time.
+    stream.uncork();
+  });
+```
+
+### writable.write(chunk[, encoding][, callback])
+>   v0.9.4+
+
+*   `chunk` [\<String\>][String] | [\<Buffer\>][Buffer] 写入的的数据
+*   `encoding` [\<String\>][String] 编码格式 ， 当`chunk`为字符串时有效
+*   `callback` [\<Function\>][Function] 当数据被冲洗的时候执行回调函数。
+*   返回：[\<Boolean\>][Boolean] 如果希望执行代码等到`drain`事件在写入额外的数据之前触发。 则返回:`false`；否则：`true`。
+
+`writable.write()`方法可以往流中写入数据，一旦数据被处理完成就会执行特定的`callback`回调函数。`callback`可能会或者可能不会把错误作为回调函数的第一个参数。
+最可靠的处理错误就是为`error`事件添加监听函数。
+
+返回值表明写入的`chunk`是否被内部缓存或已经超过了流创建是配置的`highWaterMark`值。如果返回`false`，应该停止写入数据，知道`drain`事件被触发之后。
+
+对象模式下`Writable`流会忽略`encoding`参数。
+
+### Readable Streams
+
 
 ====================================[未完待续...]==========================================
 
-
+[Buffer]: https://nodejs.org/dist/latest-v6.x/docs/api/buffer.html#buffer_class_buffer
+[String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
 [request-to-an-HTTP-server]: https://nodejs.org/dist/latest-v6.x/docs/api/http.html#http_class_http_incomingmessage
 [process.stdout]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stdout
 [EventEmitter]: https://nodejs.org/dist/latest-v6.x/docs/api/events.html#events_class_eventemitter
