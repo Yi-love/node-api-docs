@@ -339,9 +339,42 @@ Node.js有4种基本类型的流：
 对象模式下`Writable`流会忽略`encoding`参数。
 
 ### Readable Streams
+可读流是等待被消费的数据。
+
+例如可读流包括：
+
+*   [HTTP responses, on the client][HTTP-responses-on-the-client] 客户端http返回值
+*   [HTTP requests, on the server][HTTP-requests-on-the-server] 服务器http请求
+*   [fs read streams][fs-read-streams] 读文件流
+*   [zlib streams][zlib-streams]  压缩流
+*   [crypto streams][crypto-streams] 加密流
+*   [TCP sockets][TCP-sockets] TCP套接字
+*   [child process stdout and stderr][child-process-stdout-and-stderr] 子进程的标准输出和错误流
+*   [process.stdin][process.stdin]
+
+所有的可读流实例都是通过`stream.Readable`类接口实现。
+
+### Two Modes
+可读流有效的操作模式有两种:流动和暂停。
+
+流动模式，通过使用事件EventEmitter接口把数据从底层系统自动读取和尽快提供给应用程序。
+
+暂停模式，`stream.read()`方法必须显式地读取流中的数据块。
+
+所有的可读流可以通过以下任意一种方式从暂停模式切换到流动模式：
+
+*   添加`'data'`事件句柄
+*   调用`stream.resume()`方法
+*   调用`stream.pipe()`方法传输可写数据
+
+可以通过以下任何一种方式切换回暂停模式：
+
+*   如果没有`pipe`终点，调用`stream.pause()`方法
+*   如果有`pipe`终点，删除任何`data`事件句柄，使用`stream.unpipe()`方法移除所有`pipe`终点。
 
 
-====================================[未完待续...]==========================================
+
+================================[未完待续...]======================================
 
 [Buffer]: https://nodejs.org/dist/latest-v6.x/docs/api/buffer.html#buffer_class_buffer
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type
@@ -366,3 +399,11 @@ Node.js有4种基本类型的流：
 [process.stdout]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stdout
 [process.stderr]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stderr
 [Error]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error
+[HTTP-responses-on-the-client]: https://nodejs.org/dist/latest-v7.x/docs/api/http.html#http_class_http_incomingmessage
+[HTTP-requests-on-the-server]: https://nodejs.org/dist/latest-v7.x/docs/api/http.html#http_class_http_incomingmessage
+[fs-read-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_class_fs_readstream
+[zlib-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/zlib.html
+[crypto-streams]: https://nodejs.org/dist/latest-v6.x/docs/api/crypto.html
+[TCP-sockets]: https://nodejs.org/dist/latest-v6.x/docs/api/net.html#net_class_net_socket
+[child-process-stdout-and-stderr]: https://nodejs.org/dist/latest-v6.x/docs/api/child_process.html#child_process_child_stdout
+[process.stdin]: https://nodejs.org/dist/latest-v6.x/docs/api/process.html#process_process_stdin
