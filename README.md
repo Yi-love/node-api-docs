@@ -8,3 +8,4 @@
 * [Events](./docs/Events.md)
 * [File System](./docs/FileSystem.md)
 * [Stream](./docs/Stream.md)
+* [Stream](./docs/dns.md)
