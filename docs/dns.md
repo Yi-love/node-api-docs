@@ -1,6 +1,4 @@
 # 内容目录
-    
-
 
 
 # DNS
@@ -110,6 +108,155 @@
 
 ## dns.resolve(hostname[, rrtype], callback)
 >   0.1.27+
+
+使用DNS协议根据指定类型的`rrtype`数组解析`hostname`（例如： `'nodejs.org'`）.
+
+`rrtype`有效值如下：
+
+*   `'A'` - IPv4 地址。默认
+*   `'AAAA'` - IPv6地址
+*   `'MX'` - 邮件交换记录
+*   `'TXT'` - 文本记录
+*   `'SRV'` - SRV记录
+*   `'PTR'` - PTR记录
+*   `'NS'` -  名称服务器记录
+*   `'CNAME'` - 规范内的名称记录
+*   `'SOA'` - 权限控制记录
+*   `'NAPTR'` - 名字权限控制引用记录
+
+`callback`函数有2个参数`(err,addresses)`。成功的时候，`addresses`将是一个数组，除了解析`  SOA`记录返回对象结构,`dns.resolveSoa()`同样返回对象结构。`adresses`的每一项类型取决于记录类型，`lookup`方法中有相应的文档描述。
+
+出错情况下，`err`是一个`Error`对象，`err.code`代码错误码。错误码列表：[here](https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_error_codes).
+
+## dns.resolve4(hostname, callback)
+>   v0.1.16+
+
+使用`DNS`协议解析IPv4地址主机名(`A`记录)。`adresses`参数是传递给`callback`函数的IPv4地址数组。（例如：`['74.125.79.104', '74.125.79.105', '74.125.79.106']`）
+
+## dns.resolve6(hostname, callback)
+>   v0.1.16+
+
+使用`DNS`协议解析IPv6地址主机名(`AAAA`记录)。`adresses`参数是传递给`callback`函数的IPv6地址数组.
+
+## dns.resolveCname(hostname, callback)
+>   V0.3.2+
+
+使用`DNS`协议解析`CNAME`记录主机名。`adresses`参数是传递给`callback`函数规范内有效的主机名数组（例如：`['bar.example.com']`）.
+
+## dns.resolveMx(hostname, callback)
+>   v0.1.27+
+
+使用DNS协议解决邮件交换记录主机名(`MX`记录)。`adresses`参数是传递给`callback`函数主机名对象数组，对象包含`priority`和`exchange`属性（例如： `[{priority: 10, exchange: 'mx.example.com'}, ...]`）。
+
+## dns.resolveNaptr(hostname, callback)
+>   v0.9.12+
+
+使用DNS协议来解决基于正则表达式匹配的记录(`NAPTR`记录)的主机名。`callback`函数有2个参数`(err , addresses)`。adresses`参数是传递给`callback`函数主机名对象数组，对象包含属性：
+
+*   `flags`
+*   `service`
+*   `regexp`
+*   `replacement`
+*   `order`
+*   `preference`
+
+例如：
+
+```js
+  {
+    flags: 's',
+    service: 'SIP+D2U',
+    regexp: '',
+    replacement: '_sip._udp.example.com',
+    order: 30,
+    preference: 100
+  }
+```
+
+## dns.resolveNs(hostname, callback)
+>   v0.1.90+
+
+使用DNS协议解决名称服务器主机名记录(`NS`记录)。`adresses`为有效的名称服务器记录主机名数组（eg:`['ns1.example.com', 'ns2.example.com']`）。
+
+## dns.resolveSoa(hostname, callback)
+>   v0.11.10+
+
+使用DNS协议解决主机名开始权威（子域名）记录(`SOA`记录)。`addresses`为为一个对象包含以下属性：
+
+*   `nsname`
+*   `hostmaster`
+*   `serial`
+*   `refresh`
+*   `retry`
+*   `expire`
+*   `minttl`
+
+```js
+  {
+    nsname: 'ns.example.com',
+    hostmaster: 'root.example.com',
+    serial: 2013101809,
+    refresh: 10000,
+    retry: 2400,
+    expire: 604800,
+    minttl: 3600
+  }
+```
+
+## dns.resolveSrv(hostname, callback)
+>   v0.1.27+
+
+使用DNS协议来解决主机名服务记录(SRV记录)。`addresses`传入`callback`函数，`addresses`为对象数组,每个对象包含以下属性：
+
+*   `priority`
+*   `weight`
+*   `port`
+*   `name`
+
+```js
+  {
+    priority: 10,
+    weight: 5,
+    port: 21223,
+    name: 'service.example.com'
+  }
+```
+
+## dns.resolvePtr(hostname, callback)
+>   v6.0.0+
+
+使用DNS协议解决主机名引用记录(PTR记录)。`addresses`参数将一个字符串数组传递给回调函数`callback`,其中包含回复记录。
+
+## dns.resolveTxt(hostname, callback)
+>   v0.1.27+
+
+使用DNS协议解决文本查询主机名(TXT记录)。`addresses`参数传递给回调函数`callback`的地址是一个二维数组的文本记录用于主机名(例如：`[ ['v=spf1 ip4:0.0.0.0 ', '~all' ] ]`).
+每个数组文本块包含一条记录。根据用例,这些可以是连接在一起或单独对待。
+
+## dns.reverse(ip, callback)
+>   v0.1.16+
+
+执行一个反向DNS查询解决IPv4和IPv6地址的主机名的数组。
+
+`callback`包含2个参数`(err,hostnames)` 。 根据`ip`返回`hostnames`数组。
+
+出错情况下，`err`是一个`Error`对象，`err.code`代码错误码。错误码列表：[here](https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_error_codes).
+
+## dns.setServers(servers)
+>   v0.11.3+
+
+设置解析时使用的服务器IP地址。`servers`服务器参数是一个数组的IPv4和IPv6地址.
+
+如果指定的ip包含端口，端口会被移除。
+
+`ip`地址无效将会报错。
+
+`dns.setServers()`方法不要在DNS查询进程中使用。
+
+## Error codes
+每个DNS查询可以返回一个错误代码如下:
+
+*   
 
 =============================[未完待续...]==============================
 
