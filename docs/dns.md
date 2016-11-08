@@ -1,5 +1,27 @@
 # 内容目录
 
+*   DNS
+    *   dns.getServers()
+    *   dns.lookup(hostname[, options], callback)
+        *   Supported getaddrinfo flags
+    *   dns.lookupService(address, port, callback)
+    *   dns.resolve(hostname[, rrtype], callback)
+    *   dns.resolve4(hostname, callback)
+    *   dns.resolve6(hostname, callback)
+    *   dns.resolveCname(hostname, callback)
+    *   dns.resolveMx(hostname, callback)
+    *   dns.resolveNaptr(hostname, callback)
+    *   dns.resolveNs(hostname, callback)
+    *   dns.resolveSoa(hostname, callback)
+    *   dns.resolveSrv(hostname, callback)
+    *   dns.resolvePtr(hostname, callback)
+    *   dns.resolveTxt(hostname, callback)
+    *   dns.reverse(ip, callback)
+    *   dns.setServers(servers)
+    *   Error codes
+    *   Implementation considerations
+        *   dns.lookup()
+        *   dns.resolve(), dns.resolve*() and dns.reverse()
 
 # DNS
 >   稳定性：稳定
@@ -256,9 +278,55 @@
 ## Error codes
 每个DNS查询可以返回一个错误代码如下:
 
-*   
+*   `dns.NODATA`: DNS服务返回没有数据.
+*   `dns.FORMERR`: DNS服务器查询没有格式化.
+*   `dns.SERVFAIL`: DNS服务器返回失败。
+*   `dns.NOTFOUND`: 域名未找到。
+*   `dns.NOIMP`: DNS服务器不执行请求的操作。
+*   `dns.REFUSED`: 查询DNS服务器拒绝。
+*   `dns.BADQUERY`:  未格式化DNS查询。
+*   `dns.BADNAME`: 未格式化主机名
+*   `dns.BADFAMILY`: 没有提供地址族
+*   `dns.BADRESP`: 未格式化DNS回复
+*   `dns.CONNREFUSED`: 无法连接DNS服务器
+*   `dns.TIMEOUT`: 连接DNS服务器超时
+*   `dns.EOF`: 文件末尾
+*   `dns.FILE`: 读取文件错误
+*   `dns.NOMEM`: 内存溢出
+*   `dns.DESTRUCTION`: 通道以及销毁
+*   `dns.BADSTR`: 未格式化字符串
+*   `dns.BADFLAGS`: 指定非法标记
+*   `dns.NONAME`: 给定的主机名不是数字。
+*   `dns.BADHINTS`: 指定非法的提示标志。
+*   `dns.NOTINITIALIZED`: `c-ares`异步DNS请求库初始化未完成。
+*   `dns.LOADIPHLPAPI`: 加载`iphlpapi.dll`(Windows IP辅助API应用程序接口模块)错误
+*   `dns.ADDRGETNETWORKPARAMS`: 找不到`GetNetworkParams`(读取本机DNS信息)函数
+*   `dns.CANCELLED`: DNS查询取消
 
-=============================[未完待续...]==============================
+## Implementation considerations
+
+> 注意事项
+
+尽管`dns.lookup()`和各种`dns.resolve *()/ dns.reverse()``函数有相同的目标将网络的名字与网络地址联系在一起(反之亦然)，他们的行为是完全不同的。
+这些差异可以有微妙但重大影响着Node.js程序行为。
+
+### dns.lookup()
+
+在底层,`dns.lookup()`使用操作系统设施与大多数其他程序相同。例如，`dns.lookup()`几乎总是解析给定的主机名与`ping`命令一样。在许多类POSIX操作系统中，
+`dns.lookup()`函数的行为可以通过改变`nsswitch.conf(5)`并且/或`resolv.conf(5)`设置进行改变，但是需要注意改变这些文件就意味着改变所有正在这个操作系统中运行
+的所有进程的行为。
+
+尽管以异步`JavaScript`的角度来调用`dns.lookup()`,但在内部`libuv`底层线程池中却是同步的调用`getaddrinfo(3)`。因为`libuv`线程池有固定大小，它意味着,如果出于某种原因调用`getaddrinfo(3)`需要很长时间,其他操作可以运行在libuv线程池中(如文件系统操作)就会存在性能问题。为了缓解这个问题,一个可能的解决办法是增加libuv的线程池大小通过设置`'UV_THREADPOOL_SIZE'`环境变量值大于`4`(当前的默认值).更多libuv线程池信息，请查看：[here](http://docs.libuv.org/en/latest/threadpool.html)
+
+### dns.resolve(), dns.resolve*() and dns.reverse()
+这些功能实现与dns.lookup()截然不同。它们不仅没有使用`getaddrinfo(3)`并且通过网络执行DNS查询。使用异步网络通信，并且没有使用libuv线程池。
+
+因此,这些函数不会像使用libuv线程池的`dns.lookup()`函数一样会对其它进程有负面影响。
+
+它们不像`dns.lookup()`一样使用相同的配置文件。例如，它们不会使用来自`/etc/hosts`配置。
+
+
+=============================[完]==============================
 
 
 [Implementation-considerations-section]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_implementation_considerations
