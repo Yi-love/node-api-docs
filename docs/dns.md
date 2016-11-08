@@ -83,7 +83,7 @@
 
 *   `family` [\<Number\>][Number] `IP`家族.如果传入,必须是`4`或`6`。如果不提供，`IP4`和`IP6`地址都有效。
 *   `hints`: [\<Number\>][Number] 如果传入，它应该是支持一个或多个`getaddrinfo`标记。如果`hints`没有提供，没有标记传入`getaddrinfo`。多个标记可以通过逻辑`or`计算它们的值。更多支持标记信息请查看[supported getaddrinfo flags][supported-getaddrinfo-flags]
-*   `all`: [\<Boolean\>][Boolean] `true`的时候，回调函数返回解决的地址数组，其它时候返回单个地址，默认`false`。
+*   `all`: [\<Boolean\>][Boolean] `true`的时候，回调函数返回解析的地址数组，其它时候返回单个地址，默认`false`。
 
 参数使用例子：
 
@@ -97,11 +97,11 @@
 
 `callback`回调函数有3个参数`(err , address , family)`。`address`表示一个`IPv4`或`IPv6`字符串地址。`family`参数表示`address`的家族符号为`4`或`6`中的任何一个(不一定要把最初的值传递给`lookup`)。
 
-如果`all`参数设置为`true`,回调参数改变为`(err,addresses)`，并且`addresses`将变为属性`address`和`family`的对象数组.
+如果`all`参数设置为`true`,回调参数改变为`(err,addresses)`，并且`addresses`将为包含属性`address`和`family`的对象数组.
 
 出错情况下，`err`是一个`Error`对象，`err.code`代码错误码。需要注意的是`err.code`被设置为`ENOENT`时，不仅仅是在主机名不存在的情况下，在查找文件描述符失败的时候也会如此。
 
-`dns.lookup()`不需要对DNS协议做任何事。实现使用的是操作系统底层设备可以将名称和地址联系起来，反之亦然. 这个实现有些微妙，但这对Node.js程序的行为有着重要的影响。使用`dns.lookup()`之前，请仔细阅读[Implementation-considerations-section][Implementation-considerations-section]。
+`dns.lookup()`不需要对DNS协议做任何事。实现使用的是操作系统底层设备来将主机名和ip地址联系起来，反之亦然. 这个实现有些微妙，但这对Node.js程序的行为有着重要的影响。使用`dns.lookup()`之前，请仔细阅读[Implementation-considerations-section][Implementation-considerations-section]。
 
 ### Supported getaddrinfo flags
 `dns.lookup()`可选参数`options`的`hints`参数:
@@ -329,6 +329,7 @@
 =============================[完]==============================
 
 
+[Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [Implementation-considerations-section]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_implementation_considerations
 [Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
 [supported-getaddrinfo-flags]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_supported_getaddrinfo_flags
