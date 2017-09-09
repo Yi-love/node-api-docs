@@ -372,7 +372,7 @@ Node.js有4种基本类型的流：
 *   如果没有`pipe`终点，调用`stream.pause()`方法
 *   如果有`pipe`终点，删除任何`data`事件句柄，使用`stream.unpipe()`方法移除所有`pipe`终点。
 
-### API for Stream Implementers
+## API for Stream Implementers
 `stream`模块API的设计是为了让JavaScrit的原型继承模式可以简单的实现流。
 
 首先，一个流开发者可能声明了一个JavaScript类并且继承四个基本流类中的一个（`stream.Weiteable`，`stream.Readable`，`stream.Duplex`，或者`stream.Transform`），确保他们调用合适的父类构造函数:
@@ -398,6 +398,20 @@ class MyWritable extends Writable {
 | 操作写数据，然后读结果 | [Transform](#stream_class_stream_transform) | [_transform](#stream_transform_transform_chunk_encoding_callback)，[_flush](#stream_transform_flush_callback)，[_final](#stream_writable_final_callback) |
 
 注意：实现流的代码里面不应该出现调用“public”方法的地方因为这些方法是给使用者使用的（[流使用者](#stream_api_for_stream_consumers)部分的API所述）。这样做可能会导致使用流的应用程序代码产生不利的副作用。
+
+### Simplified Construction
+对于许多简单的案例，它是有可能在不依赖继承的情况下创建流。这可以直接创建流实例，通过流基础类stream.Weiteable`，`stream.Readable`，`stream.Duplex`，或者`stream.Transform`传入对象完成，对象包含合适的方法作为构造函数选项。
+
+```js
+const { Writable } = require('stream');
+
+const myWritable = new Writable({
+  write(chunk, encoding, callback) {
+    // ...
+  }
+});
+```
+
 
 ================================[未完待续...]======================================
 
