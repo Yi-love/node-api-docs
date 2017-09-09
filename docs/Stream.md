@@ -400,7 +400,7 @@ class MyWritable extends Writable {
 注意：实现流的代码里面不应该出现调用“public”方法的地方因为这些方法是给使用者使用的（[流使用者](#stream_api_for_stream_consumers)部分的API所述）。这样做可能会导致使用流的应用程序代码产生不利的副作用。
 
 ### Simplified Construction
-对于许多简单的案例，它是有可能在不依赖继承的情况下创建流。这可以直接创建流实例，通过流基础类stream.Weiteable`，`stream.Readable`，`stream.Duplex`，或者`stream.Transform`传入对象完成，对象包含合适的方法作为构造函数选项。
+对于许多简单的案例，它是有可能在不依赖继承的情况下创建流。这可以直接创建流实例，通过流基础类`stream.Weiteable`，`stream.Readable`，`stream.Duplex`，或者`stream.Transform`传入对象完成，对象包含合适的方法作为构造函数选项。
 
 ```js
 const { Writable } = require('stream');
