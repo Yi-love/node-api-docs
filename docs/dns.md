@@ -112,11 +112,19 @@
 ## dns.lookupService(address, port, callback)
 >   V0.11.14+
 
+<<<<<<< HEAD
 使用操作系统底层`getnameinfo`实现传入参数`address`和`port`返回主机名和服务。
 
 如果`address`不是有效的IP地址，会抛出`TypeError`。`port`必须是一个整数.如果不是规定的端口号，会抛出`TypeError`.
 
 `callback`有3个参数`(err , hostname , service)。`hostname`和`service`都是字符串（例如：分别为`localhost` 和`http`）。
+=======
+将参数`address`和`port`传入操作系统底层`getnameinfo`服务来解析处理并返回主机名。
+
+如果`address`不是有效的IP地址，会抛出`TypeError`。`port`必须是一个整数.如果不是规定的端口号，会抛出`TypeError`.
+
+`callback`有3个参数`(err , hostname , service)`。`hostname`和`service`都是字符串（例如：分别为`localhost` 和`http`）。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 出错情况下，`err`是一个`Error`对象，`err.code`代码错误码。
 
@@ -168,12 +176,20 @@
 ## dns.resolveMx(hostname, callback)
 >   v0.1.27+
 
+<<<<<<< HEAD
 使用DNS协议解决邮件交换记录主机名(`MX`记录)。`adresses`参数是传递给`callback`函数主机名对象数组，对象包含`priority`和`exchange`属性（例如： `[{priority: 10, exchange: 'mx.example.com'}, ...]`）。
+=======
+使用DNS协议处理邮件交换记录主机名(`MX`记录)。`adresses`参数是传递给`callback`函数的主机名对象数组，对象包含`priority`和`exchange`属性（例如： `[{priority: 10, exchange: 'mx.example.com'}, ...]`）。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 ## dns.resolveNaptr(hostname, callback)
 >   v0.9.12+
 
+<<<<<<< HEAD
 使用DNS协议来解决基于正则表达式匹配的记录(`NAPTR`记录)的主机名。`callback`函数有2个参数`(err , addresses)`。adresses`参数是传递给`callback`函数主机名对象数组，对象包含属性：
+=======
+使用DNS协议来处理基于正则表达式匹配的记录(`NAPTR`记录)的主机名。`adresses`参数是传递给`callback`函数的主机名对象数组，对象包含属性：
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 *   `flags`
 *   `service`
@@ -198,12 +214,20 @@
 ## dns.resolveNs(hostname, callback)
 >   v0.1.90+
 
+<<<<<<< HEAD
 使用DNS协议解决名称服务器主机名记录(`NS`记录)。`adresses`为有效的名称服务器记录主机名数组（eg:`['ns1.example.com', 'ns2.example.com']`）。
+=======
+使用DNS协议处理名称服务器主机名记录(`NS`记录)。`adresses`为有效的名称服务器记录主机名数组（eg:`['ns1.example.com', 'ns2.example.com']`）。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 ## dns.resolveSoa(hostname, callback)
 >   v0.11.10+
 
+<<<<<<< HEAD
 使用DNS协议解决主机名开始权威（子域名）记录(`SOA`记录)。`addresses`为为一个对象包含以下属性：
+=======
+使用DNS协议处理主机名子域名记录(`SOA`记录)。`addresses`参数为一个对象包含以下属性：
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 *   `nsname`
 *   `hostmaster`
@@ -228,7 +252,11 @@
 ## dns.resolveSrv(hostname, callback)
 >   v0.1.27+
 
+<<<<<<< HEAD
 使用DNS协议来解决主机名服务记录(SRV记录)。`addresses`传入`callback`函数，`addresses`为对象数组,每个对象包含以下属性：
+=======
+使用DNS协议来处理主机名服务记录(SRV记录)。`callback`函数返回的`addresses`参数为对象数组,每个对象包含以下属性：
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 *   `priority`
 *   `weight`
@@ -247,18 +275,30 @@
 ## dns.resolvePtr(hostname, callback)
 >   v6.0.0+
 
+<<<<<<< HEAD
 使用DNS协议解决主机名引用记录(PTR记录)。`addresses`参数将一个字符串数组传递给回调函数`callback`,其中包含回复记录。
+=======
+使用DNS协议处理主机名引用记录(PTR记录)。`addresses`参数将一个字符串数组传递给回调函数`callback`,其中包含回复记录。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 ## dns.resolveTxt(hostname, callback)
 >   v0.1.27+
 
+<<<<<<< HEAD
 使用DNS协议解决文本查询主机名(TXT记录)。`addresses`参数传递给回调函数`callback`的地址是一个二维数组的文本记录用于主机名(例如：`[ ['v=spf1 ip4:0.0.0.0 ', '~all' ] ]`).
+=======
+使用DNS协议处理文本查询主机名(TXT记录)。回调函数`callback`会返回`addresses`参数，它是一个文本记录与主机名一一对应的二维数组(例如：`[ ['v=spf1 ip4:0.0.0.0 ', '~all' ] ]`).
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 每个数组文本块包含一条记录。根据用例,这些可以是连接在一起或单独对待。
 
 ## dns.reverse(ip, callback)
 >   v0.1.16+
 
+<<<<<<< HEAD
 执行一个反向DNS查询解决IPv4和IPv6地址的主机名的数组。
+=======
+执行一个反向DNS查询返回IPv4或IPv6地址的主机名的数组。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 `callback`包含2个参数`(err,hostnames)` 。 根据`ip`返回`hostnames`数组。
 
@@ -267,13 +307,21 @@
 ## dns.setServers(servers)
 >   v0.11.3+
 
+<<<<<<< HEAD
 设置解析时使用的服务器IP地址。`servers`服务器参数是一个数组的IPv4和IPv6地址.
+=======
+设置解析时使用的服务器IP地址。`servers`服务器参数是一个IPv4或IPv6地址的数组.
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 如果指定的ip包含端口，端口会被移除。
 
 `ip`地址无效将会报错。
 
+<<<<<<< HEAD
 `dns.setServers()`方法不要在DNS查询进程中使用。
+=======
+`dns.setServers()`方法不要在DNS查询过程中使用。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 
 ## Error codes
 每个DNS查询可以返回一个错误代码如下:
@@ -307,7 +355,11 @@
 
 > 注意事项
 
+<<<<<<< HEAD
 尽管`dns.lookup()`和各种`dns.resolve *()/ dns.reverse()``函数有相同的目标将网络的名字与网络地址联系在一起(反之亦然)，他们的行为是完全不同的。
+=======
+尽管`dns.lookup()`和各种`dns.resolve *()/ dns.reverse()`函数有相同的目标将网络的名字与网络地址联系在一起(反之亦然)，他们的行为是完全不同的。
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
 这些差异可以有微妙但重大影响着Node.js程序行为。
 
 ### dns.lookup()
@@ -332,4 +384,8 @@
 [Boolean]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type
 [Implementation-considerations-section]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_implementation_considerations
 [Number]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type
+<<<<<<< HEAD
 [supported-getaddrinfo-flags]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_supported_getaddrinfo_flags
+=======
+[supported-getaddrinfo-flags]: https://nodejs.org/dist/latest-v6.x/docs/api/dns.html#dns_supported_getaddrinfo_flags
+>>>>>>> 32f29e6ef77ff40721e757b14eea040de806dec0
