@@ -446,7 +446,7 @@ const myWritable = new Writable({
 
 *注*：此函数不得直接通过应用程序代码调用。 它应由子类实现，并由内部Writable进行调用类方法。
 
-除了可以实现`writable._writev()`方法能够一次处理多个数据块的流除了`writable._write()`之外。如果实现，该方法将被调用当前在写入队列中缓存的所有数据块。
+`writable._writev()`方法能够一次处理多个数据块的流除了`writable._write()`之外。如果实现，该方法将缓存的所有数据块写入队列。
 
 `writable._writev()`方法前缀为下划线，因为它是定义它的类的内部，不应该由用户程序直接调用。
 
